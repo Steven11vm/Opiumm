@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opium</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#about">Habla con bat</a></li>
+                <li><a href="#artists">Artistas</a></li>
+                <li><a href="#generate">Generar</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="home" class="hero">
+            <!-- Video de catedral gótica -->
+            <video autoplay muted loop class="hero-video">
+                <source src="{{ url_for('static', filename='videos/Gotic.mp4') }}" type="video/mp4">
+                Tu navegador no soporta la etiqueta de video.
+            </video>
+            <div class="hero-content">
+                <h1>Dark Music AI</h1>
+                <p>Genera beats y habla con el chat bot carti para escuchar las mejores o remix del momento inspirados en Playboi Carti y Ken Carson</p>
+            </div>
+        </section>
+        <section id="about" class="about">
+            <h2>Sobre nuestra IA</h2>
+            <p>Utilizamos algoritmos avanzados para crear beats únicos en el estilo de tus artistas favoritos.</p>
+            <img src="{{ url_for('static', filename='images/I AM MUSIC.jpg') }}" alt="AI Music Generation" class="about-image">
+        </section>
+        <section id="artists" class="artists">
+            <h2>Artistas Inspiradores</h2>
+            <div class="artist-cards">
+                <div class="artist-card">
+                    <img src="{{ url_for('static', filename='images/KenCarson.jpg') }}" alt="Ken Carson">
+                    <h3>Ken Carson</h3>
+                </div>
+                <div class="artist-card">
+                    <img src="{{ url_for('static', filename='images/Playboi carti.jpg') }}" alt="Playboi carti">
+                    <h3>Playboi carti</h3>
+                </div>
+            </div>
+        </section>
+        <section id="generate" class="generate">
+            <h2>Genera tu Beat</h2>
+            <form>
+                <label for="style">Estilo:</label>
+                <select id="style" name="style">
+                    <option value="carti">Playboi Carti</option>
+                    <option value="carson">Ken Carson</option>
+                    <option value="mix">Mezcla</option>
+                </select>
+                <label for="duration">Duración (segundos):</label>
+                <input type="number" id="duration" name="duration" min="30" max="180" value="60">
+                <button type="submit">Generar Beat</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Dark Music AI. Todos los derechos reservados.</p>
+    </footer>
+    
+    <!-- Reproductor de música -->
+    <div class="music-player">
+        <audio id="audio-player" controls>
+            <source src="{{ url_for('static', filename='Music/Magnolia.mp3') }}" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+        <div class="music-icon">
+            <img src="{{ url_for('static', filename='images/Music.jpg') }}" alt="Music Icon">
+        </div>
+    </div>
+    
+    <!-- Botón del chat bot -->
+    <div class="chatbot-button">
+        <img src="{{ url_for('static', filename='images/Redcarti.jpg') }}" alt="Chat Bot">
+    </div>
+</body>
+
+</html>
