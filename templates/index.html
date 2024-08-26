@@ -14,7 +14,7 @@
         <nav>
             <ul>
                 <li><a href="#home">Inicio</a></li>
-                <li><a href="#about">Habla con bat</a></li>
+                <li><a href="/templates/IAgotic.html">Sobre la IA</a></li>
                 <li><a href="#artists">Artistas</a></li>
                 <li><a href="#generate">Generar</a></li>
             </ul>
@@ -24,18 +24,36 @@
         <section id="home" class="hero">
             <!-- Video de catedral gótica -->
             <video autoplay muted loop class="hero-video">
-                <source src="{{ url_for('static', filename='videos/Gotic.mp4') }}" type="video/mp4">
+                <source src="{{ url_for('static', filename='videos/Calavera.mp4') }}" type="video/mp4">
                 Tu navegador no soporta la etiqueta de video.
             </video>
             <div class="hero-content">
                 <h1>Dark Music AI</h1>
-                <p>Genera beats y habla con el chat bot carti para escuchar las mejores o remix del momento inspirados en Playboi Carti y Ken Carson</p>
+                <p>Genera beats y habla con el chat bot Carti para escuchar las mejores o remixes del momento inspirados en Playboi Carti y Ken Carson.</p>
             </div>
         </section>
         <section id="about" class="about">
             <h2>Sobre nuestra IA</h2>
             <p>Utilizamos algoritmos avanzados para crear beats únicos en el estilo de tus artistas favoritos.</p>
-            <img src="{{ url_for('static', filename='images/I AM MUSIC.jpg') }}" alt="AI Music Generation" class="about-image">
+            
+            <!-- Sección de hover con imagen y descripción -->
+            <div class="info-container">
+                <!-- Hover pequeño a la izquierda -->
+                <div class="hover-container">
+                    <div class="hover-info">
+                        <img src="{{ url_for('static', filename='images/I AM MUSIC.jpg') }}" alt="AI Music Generation" class="hover-image">
+                        <div class="hover-description">
+                            <p>¡Descubre cómo nuestra IA puede generar beats únicos al estilo de tus artistas favoritos!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Descripción de Playboi Carti a la derecha -->
+                <div class="carti-description">
+                    <h3>¿Por qué Playboi Carti es uno de los mejores raperos?</h3>
+                    <p>Playboi Carti es conocido por su estilo innovador y su habilidad para fusionar elementos del trap con un enfoque melódico único. Su música tiene una energía contagiosa y sus letras a menudo exploran temas de estilo de vida y moda, creando una conexión profunda con su audiencia. Además, su capacidad para experimentar con sonidos y colaborar con otros artistas ha establecido un nuevo estándar en el género.</p>
+                </div>
+            </div>
         </section>
         <section id="artists" class="artists">
             <h2>Artistas Inspiradores</h2>
@@ -45,8 +63,8 @@
                     <h3>Ken Carson</h3>
                 </div>
                 <div class="artist-card">
-                    <img src="{{ url_for('static', filename='images/Playboi carti.jpg') }}" alt="Playboi carti">
-                    <h3>Playboi carti</h3>
+                    <img src="{{ url_for('static', filename='images/Playboi carti.jpg') }}" alt="Playboi Carti">
+                    <h3>Playboi Carti</h3>
                 </div>
             </div>
         </section>
@@ -70,13 +88,15 @@
     </footer>
     
     <!-- Reproductor de música -->
-    <div class="music-player">
-        <audio id="audio-player" controls>
-            <source src="{{ url_for('static', filename='Music/Magnolia.mp3') }}" type="audio/mpeg">
-            Tu navegador no soporta el elemento de audio.
-        </audio>
-        <div class="music-icon">
-            <img src="{{ url_for('static', filename='images/Music.jpg') }}" alt="Music Icon">
+    <div class="music-player-container">
+        <div class="music-player">
+            <div class="music-icon">
+                <img src="{{ url_for('static', filename='images/Music.jpg') }}" alt="Music Icon">
+            </div>
+            <audio id="audio-player" controls>
+                <source src="{{ url_for('static', filename='Music/Magnolia.mp3') }}" type="audio/mpeg">
+                Tu navegador no soporta el elemento de audio.
+            </audio>
         </div>
     </div>
     
