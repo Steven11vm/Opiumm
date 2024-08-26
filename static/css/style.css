@@ -1,138 +1,50 @@
 /* Estilos generales */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ffffff;
+}
 
-
-
-/* Estilo del reproductor de música */
-.music-player-container {
+/* Navegación mejorada */
+header {
+    background-color: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
     position: fixed;
-    top: 20px; /* Ubicado en la parte superior */
-    right: 20px; /* Ubicado en la parte derecha */
-    z-index: 1000;
-}
-
-.music-player {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    background: #1a1a1a;
-    border-radius: 30px; /* Redondeado completo */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: width 0.3s ease, height 0.3s ease;
-    overflow: hidden; /* Asegura que el contenido no sobresalga */
-}
-
-.music-player:hover {
-    width: 300px; /* Ajusta el tamaño cuando el cursor está sobre el área */
-    height: 60px;
-    border-radius: 30px;
-    background: #1a1a1a; /* Color de fondo cuando está expandido */
-}
-
-.music-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.music-icon img {
-    width: 30px;
-    height: auto;
-    transition: opacity 0.3s ease;
-}
-
-#audio-player {
-    position: absolute;
-    left: 0;
-    bottom: 0;
     width: 100%;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
 }
 
-.music-player:hover #audio-player {
-    opacity: 1; /* Muestra el reproductor de audio cuando el cursor está sobre el área */
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
 }
 
-/* Personalización de controles del reproductor */
-.music-player::-webkit-media-controls-panel {
-    background-color: #b71c1c; /* Barra de reproducción en rojo */
+nav ul li {
+    margin: 0 1rem;
 }
 
-.music-player::-webkit-media-controls-play-button {
-    background-color: #b71c1c;
+nav ul li a {
+    color: #b3b3b3;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Estilo del botón del chat bot */
-.chatbot-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000; /* Asegura que el botón esté por encima de otros elementos */
+nav ul li a:hover {
+    color: #ffffff;
 }
 
-.chatbot-button img {
-    width: 60px; /* Ajusta el tamaño según tu preferencia */
-    height: auto;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.chatbot-button img:hover {
-    transform: scale(1.1);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Estilo del video en la sección hero */
+/* Sección hero */
 .hero {
     position: relative;
     height: 100vh;
@@ -151,115 +63,29 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -1; /* Asegura que el video quede detrás del contenido */
+    z-index: -1;
 }
 
 .hero-content {
     position: relative;
-    z-index: 1; /* Asegura que el contenido esté por encima del video */
-    color: #ffffff; /* Color del texto para asegurar contraste con el video */
+    z-index: 1;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
 }
 
 .hero h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
-    text-shadow: 0 0 10px #580404; /* Sombra de texto para mayor visibilidad */
+    text-shadow: 0 0 10px #580404;
 }
 
 .hero p {
     font-size: 1.5rem;
     max-width: 600px;
     margin: 0 auto;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #0a0a0a;
-    color: #ffffff;
-}
-
-/* Encabezado y navegación */
-header {
-    background-color: #1a1a1a;
-    padding: 1rem 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
-
-nav ul {
-    display: flex;
-    justify-content: center;
-    list-style-type: none;
-    padding: 0;
-}
-
-nav ul li {
-    margin: 0 1rem;
-}
-
-nav ul li a {
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-nav ul li a:hover {
-    color: #ffffff;
-}
-
-/* Sección hero */
-.hero {
-    position: relative;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-image: url('../images/catedral.jpg'); /* Imagen de fondo de catedral */
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Capa negra semitransparente */
-    backdrop-filter: blur(8px); /* Efecto de desenfoque */
-    z-index: -1; /* Asegura que la capa no cubra el contenido */
-}
-
-.hero h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 10px #ffffff;
-}
-
-.hero p {
-    font-size: 1.5rem;
-    max-width: 600px;
 }
 
 /* Secciones */
@@ -271,7 +97,7 @@ h2 {
     font-size: 2.5rem;
     margin-bottom: 2rem;
     text-align: center;
-    color: #000000;
+    color: #ffffff;
 }
 
 /* Sección Sobre IA */
@@ -281,103 +107,6 @@ h2 {
     align-items: center;
 }
 
-.about-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-top: 2rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-/* Sección Artistas */
-.artist-cards {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-}
-
-.artist-card {
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.artist-card:hover {
-    transform: scale(1.05);
-}
-
-.artist-card img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-}
-
-.artist-card h3 {
-    padding: 1rem;
-    text-align: center;
-}
-
-/* Sección Generar */
-.generate form {
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.generate label {
-    margin-top: 1rem;
-}
-
-.generate select,
-.generate input,
-.generate button {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: none;
-}
-
-.generate button {
-    background-color: #9b0404;
-    color: #ffffff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.generate button:hover {
-    background-color: #af0707;
-}
-
-/* Footer */
-footer {
-    background-color: #000000;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
-}
-
-/* Animaciones */
-@keyframes glow {
-    0% {
-        text-shadow: 0 0 10px #9b0404;
-    }
-
-    50% {
-        text-shadow: 0 0 20px #9b0404, 0 0 30px #9b0404;
-    }
-
-    100% {
-        text-shadow: 0 0 10px #9b0404;
-    }
-}
-
-h1,
-h2 {
-    animation: glow 2s infinite;
-}
 .info-container {
     display: flex;
     align-items: center;
@@ -386,9 +115,11 @@ h2 {
 
 .hover-container {
     position: relative;
-    width: 150px; /* Tamaño del hover */
-    height: 150px; /* Tamaño del hover */
-    margin-right: 20px; /* Espacio entre el hover y la descripción */
+    width: 200px;
+    height: 200px;
+    margin-right: 20px;
+    overflow: hidden;
+    border-radius: 10px;
 }
 
 .hover-info {
@@ -401,8 +132,7 @@ h2 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 10px; /* Opcional: redondear las esquinas */
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .hover-description {
@@ -412,10 +142,14 @@ h2 {
     right: 0;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
-    padding: 10px;
+    padding: 15px;
     opacity: 0;
     transform: translateY(100%);
     transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hover-container:hover .hover-image {
+    transform: scale(1.1);
 }
 
 .hover-container:hover .hover-description {
@@ -424,14 +158,229 @@ h2 {
 }
 
 .carti-description {
-    max-width: 600px; /* Tamaño máximo de la descripción */
+    max-width: 600px;
     text-align: left;
 }
 
 .carti-description h3 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    color: #1DB954;
 }
 
 .carti-description p {
     line-height: 1.6;
+}
+
+/* Sección Artistas */
+.artist-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.artist-card {
+    background-color: #282828;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.artist-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.artist-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.artist-card h3 {
+    padding: 1rem;
+    text-align: center;
+    color: #1DB954;
+}
+
+/* Sección Generar */
+.generate form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.generate label {
+    margin-top: 1rem;
+    color: #b3b3b3;
+}
+
+.generate select,
+.generate input,
+.generate button {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 25px;
+    border: none;
+    background-color: #282828;
+    color: #ffffff;
+}
+
+.generate button {
+    background-color: #1DB954;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.generate button:hover {
+    background-color: #1ed760;
+}
+
+/* Footer */
+footer {
+    background-color: #282828;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+/* Reproductor de música estilo Spotify */
+.music-player-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #282828;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+
+.music-player {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.music-icon {
+    width: 56px;
+    height: 56px;
+    margin-right: 16px;
+}
+
+.music-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+#audio-player {
+    flex-grow: 1;
+}
+
+#audio-player::-webkit-media-controls-panel {
+    background-color: #282828;
+}
+
+#audio-player::-webkit-media-controls-play-button {
+    background-color: #1DB954;
+    border-radius: 50%;
+}
+
+#audio-player::-webkit-media-controls-current-time-display,
+#audio-player::-webkit-media-controls-time-remaining-display {
+    color: #b3b3b3;
+}
+
+/* Chat bot estilo Playboi Carti */
+.chatbot-button {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.chatbot-button img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.chatbot-button img:hover {
+    transform: scale(1.1);
+}
+
+.chat-window {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #282828;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    background-color: #1DB954;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 5px;
+    border: none;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    background-color: #1DB954;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+/* Animaciones */
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 10px #1DB954;
+    }
+    50% {
+        text-shadow: 0 0 20px #1DB954, 0 0 30px #1DB954;
+    }
+    100% {
+        text-shadow: 0 0 10px #1DB954;
+    }
+}
+
+h1, h2 {
+    animation: glow 2s infinite;
 }

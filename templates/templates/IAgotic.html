@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Gótica de Música</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/IAgotic.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Ventana de chat -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <h3>Chat con Carti</h3>
+            <button class="chat-toggle">✖</button>
+        </div>
+        <div class="chat-body">
+            <div class="chat-messages">
+                <div class="message bot-message">
+                    <p>Hola, ¿qué te gustaría escuchar hoy?</p>
+                </div>
+            </div>
+            <input type="text" class="chat-input" placeholder="Escribe tu mensaje...">
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+
+</html>
