@@ -164,7 +164,7 @@ h2 {
 
 .carti-description h3 {
     margin-bottom: 15px;
-    color: #1DB954;
+    color: #580404;
 }
 
 .carti-description p {
@@ -200,7 +200,7 @@ h2 {
 .artist-card h3 {
     padding: 1rem;
     text-align: center;
-    color: #1DB954;
+    color: #580404;
 }
 
 /* Sección Generar */
@@ -228,7 +228,7 @@ h2 {
 }
 
 .generate button {
-    background-color: #1DB954;
+    background-color: #580404;
     color: #ffffff;
     font-weight: bold;
     cursor: pointer;
@@ -288,7 +288,7 @@ footer {
 }
 
 #audio-player::-webkit-media-controls-play-button {
-    background-color: #1DB954;
+    background-color: #580404;
     border-radius: 50%;
 }
 
@@ -333,7 +333,7 @@ footer {
 }
 
 .chat-header {
-    background-color: #1DB954;
+    background-color: #580404;
     color: #ffffff;
     padding: 10px;
     text-align: center;
@@ -360,7 +360,7 @@ footer {
 }
 
 .chat-input button {
-    background-color: #1DB954;
+    background-color: #580404;
     color: #ffffff;
     border: none;
     border-radius: 20px;
@@ -371,13 +371,13 @@ footer {
 /* Animaciones */
 @keyframes glow {
     0% {
-        text-shadow: 0 0 10px #1DB954;
+        text-shadow: 0 0 10px #580404;
     }
     50% {
-        text-shadow: 0 0 20px #1DB954, 0 0 30px #1DB954;
+        text-shadow: 0 0 20px #580404, 0 0 30px #580404;
     }
     100% {
-        text-shadow: 0 0 10px #1DB954;
+        text-shadow: 0 0 10px #580404;
     }
 }
 
@@ -459,7 +459,7 @@ h1, h2 {
 }
 
 #audio-player::-webkit-media-controls-play-button {
-    background-color: #1DB954;
+    background-color: #580404;
     border-radius: 50%;
 }
 
@@ -594,16 +594,16 @@ input[type="range"]::-webkit-slider-thumb {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #4CAF50;
+    background: #580404;
     cursor: pointer;
     border: 4px solid #333;
-    box-shadow: -407px 0 0 400px #4CAF50;
+    box-shadow: -407px 0 0 400px #580404;
 }
 
 .generate-button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #4CAF50;
+    background-color: #580404;
     color: white;
     border: none;
     border-radius: 4px;
@@ -641,7 +641,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .control-button {
-    background-color: #4CAF50;
+    background-color: #580404;
     color: white;
     border: none;
     border-radius: 50%;
