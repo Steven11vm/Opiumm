@@ -69,19 +69,84 @@
             </div>
         </section>
         <section id="generate" class="generate">
-            <h2>Genera tu Beat</h2>
-            <form>
-                <label for="style">Estilo:</label>
-                <select id="style" name="style">
-                    <option value="carti">Playboi Carti</option>
-                    <option value="carson">Ken Carson</option>
-                    <option value="mix">Mezcla</option>
-                </select>
-                <label for="duration">Duración (segundos):</label>
-                <input type="number" id="duration" name="duration" min="30" max="180" value="60">
-                <button type="submit">Generar Beat</button>
+            <h2>Genera tu Beat Personalizado</h2>
+            <form id="beat-form">
+                <div class="form-group">
+                    <label for="style">Estilo:</label>
+                    <select id="style" name="style" required>
+                        <option value="carti">Playboi Carti</option>
+                        <option value="carson">Ken Carson</option>
+                        <option value="mix">Mezcla</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duración:</label>
+                    <input type="range" id="duration" name="duration" min="30" max="180" value="60" step="10">
+                    <output for="duration" id="duration-output">60 segundos</output>
+                </div>
+                <div class="form-group">
+                    <label for="mood">Estado de ánimo:</label>
+                    <select id="mood" name="mood" required>
+                        <option value="energetic">Energético</option>
+                        <option value="chill">Relajado</option>
+                        <option value="dark">Oscuro</option>
+                        <option value="euphoric">Eufórico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bpm">BPM:</label>
+                    <input type="number" id="bpm" name="bpm" min="60" max="200" value="140" required>
+                </div>
+                <button type="submit" class="generate-button">Generar Beat</button>
             </form>
+            <div id="beat-preview" style="display: none;">
+                <h3>Vista previa del Beat</h3>
+                <div id="waveform"></div>
+                <button id="play-pause">Reproducir</button>
+                <button id="download" disabled>Descargar Beat</button>
+            </div>
         </section>
+    
+        <!-- ... (código posterior sin cambios) ... -->
+    
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... (código del chat bot sin cambios) ...
+    
+            // Funcionalidad para el generador de beats
+            const beatForm = document.getElementById('beat-form');
+            const durationInput = document.getElementById('duration');
+            const durationOutput = document.getElementById('duration-output');
+            const beatPreview = document.getElementById('beat-preview');
+            const playPauseButton = document.getElementById('play-pause');
+            const downloadButton = document.getElementById('download');
+    
+            durationInput.addEventListener('input', function() {
+                durationOutput.textContent = this.value + ' segundos';
+            });
+    
+            beatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('Generando beat...');
+                // Simular la generación del beat
+                setTimeout(() => {
+                    beatPreview.style.display = 'block';
+                    downloadButton.disabled = false;
+                    // Aquí se inicializaría la vista previa del waveform
+                }, 2000);
+            });
+    
+            playPauseButton.addEventListener('click', function() {
+                // Aquí iría la lógica para reproducir/pausar el beat
+                console.log('Reproduciendo/Pausando beat...');
+            });
+    
+            downloadButton.addEventListener('click', function() {
+                // Aquí iría la lógica para descargar el beat generado
+                console.log('Descargando beat...');
+            });
+        });
+        </script>
     </main>
     <footer>
         <p>&copy; 2024 Dark Music AI. Todos los derechos reservados.</p>
@@ -94,7 +159,7 @@
                 <img src="{{ url_for('static', filename='images/Music.jpg') }}" alt="Music Icon">
             </div>
             <audio id="audio-player" controls>
-                <source src="{{ url_for('static', filename='Music/bando.mp3') }}" type="audio/mpeg">
+                <source src="{{ url_for('static', filename='Music/Conde.mp3') }}" type="audio/mpeg">
                 Tu navegador no soporta el elemento de audio.
             </audio>
         </div>
@@ -106,6 +171,7 @@
     </div>
 
 </body>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 
 
 <script>
@@ -116,7 +182,10 @@
         chatWindow.style.display = 'none';
         
         chatWindow.innerHTML = `
-            <div class="chat-header">Chat con Playboi Carti</div>
+            <div class="chat-header">
+                <h3>Chat con Playboi Carti</h3>
+                <button class="chat-close">&times;</button>
+            </div>
             <div class="chat-messages"></div>
             <div class="chat-input">
                 <input type="text" placeholder="Escribe un mensaje...">
@@ -127,12 +196,13 @@
         document.body.appendChild(chatWindow);
         
         chatbotButton.addEventListener('click', function() {
-            if (chatWindow.style.display === 'none') {
-                chatWindow.style.display = 'flex';
-            } else {
-                chatWindow.style.display = 'none';
-            }
+            chatWindow.style.display = 'flex';
+        });
+
+        const closeButton = chatWindow.querySelector('.chat-close');
+        closeButton.addEventListener('click', function() {
+            chatWindow.style.display = 'none';
         });
     });
-    </script>
+</script>
 </html>

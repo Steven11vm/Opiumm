@@ -384,3 +384,295 @@ footer {
 h1, h2 {
     animation: glow 2s infinite;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Reproductor de música estilo Spotify */
+.music-player-container {
+    position: left;
+    bottom: 20px;
+    right: 20px;
+    background-color: #282828;
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    z-index: 999;   
+    transition: all 0.3s ease;
+    transform: translateX(calc(100% - 60px));
+}
+
+.music-player-container:hover {
+    transform: translateX(0);
+}
+
+.music-player {
+    display: flex;
+    align-items: center;
+    width: 300px;
+}
+
+.music-icon {
+    width: 58px;
+    height: 40px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.music-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+#audio-player {
+    flex-grow: 1;
+    width: 200px;
+}
+
+#audio-player::-webkit-media-controls-panel {
+    background-color: #282828;
+}
+
+#audio-player::-webkit-media-controls-play-button {
+    background-color: #1DB954;
+    border-radius: 50%;
+}
+
+#audio-player::-webkit-media-controls-current-time-display,
+#audio-player::-webkit-media-controls-time-remaining-display {
+    color: #b3b3b3;
+}
+
+/* Chat bot estilo Playboi Carti */
+/* Chat bot estilo Playboi Carti */
+.chat-window {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1001;
+}
+
+.chat-header {
+    background-color: #b71c1c;
+    color: #ffffff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos para la sección de generación de beats */
+.generate {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+.generate h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.generate-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.generate-form, .generate-preview {
+    flex: 1;
+    background-color: #2a2a2a;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group select,
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+.duration-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    background: #3a3a3a;
+    outline: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+    border: 4px solid #333;
+    box-shadow: -407px 0 0 400px #4CAF50;
+}
+
+.generate-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.generate-button:hover {
+    background-color: #45a049;
+}
+
+.generate-preview h3 {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.waveform-container {
+    background-color: #3a3a3a;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+#waveform {
+    width: 100%;
+    height: 100px;
+}
+
+.waveform-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.control-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: #45a049;
+}
+
+.download-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+    background-color: #2980b9;
+}
+
+.download-button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
