@@ -1,44 +1,40 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const chatButton = document.querySelector('.chatbot-button');
-    const chatWindow = document.querySelector('.chat-window');
-    const chatClose = document.querySelector('.chat-close');
-    const chatInput = document.querySelector('.chat-input input');
-    const chatSend = document.querySelector('.chat-input button');
-    const chatMessages = document.querySelector('.chat-messages');
+document.addEventListener("DOMContentLoaded", function() {
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatMessages = document.getElementById('chatMessages');
 
-    chatButton.addEventListener('click', () => {
-        chatWindow.style.display = 'flex';
+    sendButton.addEventListener('click', function() {
+        const userMessage = chatInput.value;
+        if (userMessage.trim() === "") return;
+
+        appendMessage(userMessage, 'user-message');
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            appendMessage(data.response, 'bot-message');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        chatInput.value = "";
     });
 
-    chatClose.addEventListener('click', () => {
-        chatWindow.style.display = 'none';
-    });
-
-    chatSend.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-
-    function sendMessage() {
-        const message = chatInput.value.trim();
-        if (message) {
-            addMessage('user', message);
-            chatInput.value = '';
-            // Here you would typically send the message to a server
-            // and get a response. For now, we'll just echo the message.
-            setTimeout(() => {
-                addMessage('bot', `You said: ${message}`);
-            }, 1000);
-        }
-    }
-
-    function addMessage(sender, text) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', `${sender}-message`);
-        messageElement.textContent = text;
-        chatMessages.appendChild(messageElement);
+    function appendMessage(message, className) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', className);
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('message-content');
+        messageContent.innerHTML = `<p>${message}</p>`;
+        messageDiv.appendChild(messageContent);
+        chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 });
