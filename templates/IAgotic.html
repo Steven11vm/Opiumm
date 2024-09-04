@@ -6,6 +6,7 @@
     <title>IA Gótica de Música</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gotic.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header>
@@ -26,18 +27,46 @@
                     <p>{{ greeting }}</p>
                 </div>
             </div>
-            {% if response %}
-            <div class="message user-message">
-                <div class="message-content">
-                    <p>{{ response }}</p>
-                </div>
-            </div>
-            {% endif %}
         </div>
-        <form action="{{ url_for('chat') }}" method="post">
-            <input type="text" name="user_input" placeholder="Escribe tu mensaje...">
-            <button type="submit">Enviar</button>
+        <form id="chatForm" class="chat-input-wrapper">
+            <input type="text" id="userInput" class="chat-input" placeholder="Escribe tu mensaje..." aria-label="Campo de entrada para el mensaje">
+            <button type="submit" class="send-button" aria-label="Enviar mensaje">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                </svg>
+            </button>
         </form>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#chatForm').on('submit', function(e) {
+                e.preventDefault();
+                var userInput = $('#userInput').val();
+                if (userInput.trim() !== '') {
+                    addMessage('user', userInput);
+                    $.ajax({
+                        url: '/chat',
+                        method: 'POST',
+                        data: { user_input: userInput },
+                        success: function(response) {
+                            addMessage('bot', response.response);
+                        },
+                        error: function() {
+                            addMessage('bot', 'Lo siento, ha ocurrido un error.');
+                        }
+                    });
+                    $('#userInput').val('');
+                }
+            });
+
+            function addMessage(sender, message) {
+                var messageClass = sender === 'user' ? 'user-message' : 'bot-message';
+                var messageHtml = '<div class="message ' + messageClass + '"><div class="message-content"><p>' + message + '</p></div></div>';
+                $('#chatMessages').append(messageHtml);
+                $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+            }
+        });
+    </script>
 </body>
 </html>

@@ -568,7 +568,7 @@ h1, h2 {
     background-color: #b71c1c;
     color: #ffffff;
     padding: 10px;
-    display: inline-flex;
+    display: block;
     justify-content: space-between;
     align-items: center;
 }
