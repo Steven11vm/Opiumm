@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,17 +6,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IA Gótica de Música</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/gotic.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gotic.css') }}">
+    <style>
+      
+        .chat-container {
+            max-width: 800px;
+            margin: 80px auto 0;
+            padding: 20px;
+            background-color: #201c1c;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(56, 54, 54, 0.1);
+        }
+        .chat-messages {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            line-height: 1.5;
+        }
+        .user-message {
+            background-color: #292525;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #2b2626;
+        }
+        .message-content {
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+        .message-content p {
+            margin: 0;
+        }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .loading img {
+            width: 50px;
+            height: 50px;
+            filter: hue-rotate(300deg);
+        }
+        .chat-input-wrapper {
+            display: flex;
+            margin-top: 20px;
+        }
+        .chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+           
+            color: #e0e0e0;
+        }
+        .send-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #000000;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .send-button:hover {
+            background-color: #000000;
+        }
+        .send-button svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="{{ url_for('index') }}">Inicio</a></li>
-                <li><a href="{{ url_for('sobre_la_ia') }}">Habla con la IA</a></li>
-                <li><a href="#artists">Artistas</a></li>
-                <li><a href="#generate">Generar</a></li>
+                <li><a href="{{ url_for('index') }}">INICIO</a></li>
+                <li><a href="{{ url_for('sobre_la_ia') }}">HABLA CON LA IA</a></li>
+                <li><a href="#artists">ARTISTAS</a></li>
+                <li><a href="#generate">GENERAR</a></li>
             </ul>
         </nav>
     </header>
@@ -37,36 +114,138 @@
             </button>
         </form>
     </div>
-
     <script>
         $(document).ready(function() {
-            $('#chatForm').on('submit', function(e) {
-                e.preventDefault();
-                var userInput = $('#userInput').val();
-                if (userInput.trim() !== '') {
-                    addMessage('user', userInput);
-                    $.ajax({
-                        url: '/chat',
-                        method: 'POST',
-                        data: { user_input: userInput },
-                        success: function(response) {
-                            addMessage('bot', response.response);
-                        },
-                        error: function() {
-                            addMessage('bot', 'Lo siento, ha ocurrido un error.');
-                        }
-                    });
-                    $('#userInput').val('');
-                }
-            });
-
-            function addMessage(sender, message) {
-                var messageClass = sender === 'user' ? 'user-message' : 'bot-message';
-                var messageHtml = '<div class="message ' + messageClass + '"><div class="message-content"><p>' + message + '</p></div></div>';
-                $('#chatMessages').append(messageHtml);
-                $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
-            }
-        });
+         var loadingImageUrl = "{{ url_for('static', filename='images/bat.png') }}";
+         var MAX_MESSAGE_LENGTH = 500; // Ajusta este valor según sea necesario
+    
+         $('#chatForm').on('submit', function(e) {
+             e.preventDefault();
+             var userInput = $('#userInput').val();
+             if (userInput.trim() !== '') {
+                 var messages = splitMessage(userInput);
+                 sendMessages(messages);
+                 $('#userInput').val('');
+             }
+         });
+    
+         function splitMessage(message) {
+             var messages = [];
+             while (message.length > 0) {
+                 if (message.length <= MAX_MESSAGE_LENGTH) {
+                     messages.push(message);
+                     break;
+                 }
+                 var splitIndex = message.lastIndexOf(' ', MAX_MESSAGE_LENGTH);
+                 if (splitIndex === -1) splitIndex = MAX_MESSAGE_LENGTH;
+                 messages.push(message.substring(0, splitIndex));
+                 message = message.substring(splitIndex).trim();
+             }
+             return messages;
+         }
+    
+         function sendMessages(messages) {
+             addMessage('user', messages.join(' '));
+             showLoading();
+             
+             function sendNextMessage(index) {
+                 if (index >= messages.length) {
+                     hideLoading();
+                     return;
+                 }
+                 
+                 $.ajax({
+                     url: '/chat',
+                     method: 'POST',
+                     data: { user_input: messages[index] },
+                     success: function(response) {
+                         if (index === messages.length - 1) {
+                             hideLoading();
+                             addMessage('bot', response.response);
+                         }
+                         sendNextMessage(index + 1);
+                     },
+                     error: function() {
+                         hideLoading();
+                         addMessage('bot', 'Lo siento, ha ocurrido un error.');
+                     }
+                 });
+             }
+    
+             sendNextMessage(0);
+         }
+    
+         function addMessage(sender, message) {
+             var messageClass = sender === 'user' ? 'user-message' : 'bot-message';
+             var formattedMessage = formatMessage(message);
+             var messageHtml = '<div class="message ' + messageClass + '"><div class="message-content">' + formattedMessage + '</div></div>';
+             $('#chatMessages').append(messageHtml);
+             $('#chatMessages').animate({scrollTop: 0}, 'slow');
+    
+         }
+    
+         function formatMessage(message) {
+             // Reemplazar ** con etiquetas <strong>
+             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+             // Reemplazar saltos de línea con <br>
+             message = message.replace(/\n/g, '<br>');
+             return message;
+         }
+    
+         function showLoading() {
+             var loadingHtml = '<div class="loading"><img src="' + loadingImageUrl + '" alt="Cargando..."></div>';
+             $('#chatMessages').append(loadingHtml);
+             $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+         }
+    
+         function hideLoading() {
+             $('.loading').remove();
+         }
+     });
     </script>
+    
+    
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    

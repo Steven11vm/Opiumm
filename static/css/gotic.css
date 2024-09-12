@@ -153,13 +153,13 @@ nav ul li a:hover {
 
 .bot-message {
     align-self: flex-start;
-    background-color: #3a3a3a;
+    
     border-bottom-left-radius: 4px;
 }
 
 .user-message {
     align-self: flex-end;
-    background-color: #4a4a4a;
+    
     border-bottom-right-radius: 4px;
 }
 

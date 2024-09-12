@@ -1,5 +1,8 @@
 import google.generativeai as genai
-from config import Config
+from Config import Config
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 class CustomAI:
     def __init__(self, name="Opium", version="Pro 1.0"):
@@ -8,7 +11,11 @@ class CustomAI:
         self._initialize_client()
 
     def _initialize_client(self):
-        genai.configure(api_key=Config.GEMINI_API_KEY)
+        try:
+            genai.configure(api_key=Config.GEMINI_API_KEY)
+            logging.info("Gemini API inicializada correctamente")
+        except Exception as e:
+            logging.error(f"Error al inicializar Gemini API: {str(e)}")
 
     def greet_user(self):
         return f"Hola, soy {self.name}, tu asistente de inteligencia artificial gótica."
@@ -17,6 +24,8 @@ class CustomAI:
         try:
             model = genai.GenerativeModel('gemini-pro')
             response = model.generate_content(user_input)
+            logging.info("Respuesta generada correctamente")
             return response.text
         except Exception as e:
+            logging.error(f"Error al obtener respuesta de Gemini: {str(e)}")
             return f"Error al obtener respuesta de Gemini: {str(e)}"
