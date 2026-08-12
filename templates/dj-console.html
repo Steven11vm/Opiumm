@@ -2,14 +2,33 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Consola DJ Opium — Dos platos, crossfader, EQ y grabación de sesión.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#100d0c">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <title>Consola DJ — Opium</title>
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Opium">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:title" content="Consola DJ — Opium">
+    <meta property="og:description" content="Dos platos, crossfader, EQ y grabación de sesión.">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ site_url }}/static/apple-touch-icon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Consola DJ — Opium">
+    <meta name="twitter:description" content="Dos platos, crossfader, EQ y grabación de sesión.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="stylesheet" href="/static/css/elegant.css">
     <script src="/static/js/loader.js" nonce="{{ csp_nonce }}"></script>
     <script src="/static/js/toast.js" defer nonce="{{ csp_nonce }}"></script>
@@ -24,6 +43,8 @@
         </div>
         <span class="opium-loader-text">Cargando</span>
     </div>
+
+    <a href="#libraryGrid" class="skip-link">Saltar a la biblioteca</a>
 
     <div class="console-wrap">
         <header class="header-dj">
@@ -490,44 +511,62 @@
                     const blob = new Blob(recordedChunks, { type: 'audio/webm' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
+                    const name = 'opium-dj-session-' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.webm';
                     a.href = url;
-                    a.download = 'opium-dj-session-' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.webm';
+                    a.download = name;
                     a.click();
                     URL.revokeObjectURL(url);
+                    if (window.OpiumToast) OpiumToast.success('Sesión guardada como ' + name, { title: 'Grabación lista' });
                 };
                 mediaRecorder.start();
                 recordBtn.textContent = '⏹ Parar grabación';
                 recordBtn.classList.add('recording');
+                if (window.OpiumToast) OpiumToast.info('Grabando la mezcla en vivo. Pulsa de nuevo para detener y descargar.', { title: 'Grabando', duration: 4000 });
             };
 
-            // Modal explicativo
+            // Modal explicativo con focus trap + ESC
             const djModal = document.getElementById('djModal');
             const djInfoBtn = document.getElementById('djInfoBtn');
             const djModalClose = document.getElementById('djModalClose');
-            if (djInfoBtn && djModal) {
-                djInfoBtn.addEventListener('click', () => {
-                    djModal.classList.add('open');
-                    djModal.setAttribute('aria-hidden', 'false');
-                });
+            let lastFocused = null;
+
+            function openModal() {
+                if (!djModal) return;
+                lastFocused = document.activeElement;
+                djModal.classList.add('open');
+                djModal.setAttribute('aria-hidden', 'false');
+                setTimeout(() => { if (djModalClose) djModalClose.focus(); }, 50);
             }
-            if (djModalClose && djModal) {
-                djModalClose.addEventListener('click', () => {
-                    djModal.classList.remove('open');
-                    djModal.setAttribute('aria-hidden', 'true');
-                });
+            function closeModal() {
+                if (!djModal) return;
+                djModal.classList.remove('open');
+                djModal.setAttribute('aria-hidden', 'true');
+                if (lastFocused && lastFocused.focus) lastFocused.focus();
             }
+            function trapFocus(e) {
+                if (!djModal.classList.contains('open')) return;
+                if (e.key !== 'Tab') return;
+                const focusables = djModal.querySelectorAll('a[href], button, [tabindex]:not([tabindex="-1"])');
+                if (!focusables.length) return;
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault(); last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault(); first.focus();
+                }
+            }
+
+            if (djInfoBtn) djInfoBtn.addEventListener('click', openModal);
+            if (djModalClose) djModalClose.addEventListener('click', closeModal);
             if (djModal) {
-                djModal.addEventListener('click', (e) => {
-                    if (e.target === djModal) {
-                        djModal.classList.remove('open');
-                        djModal.setAttribute('aria-hidden', 'true');
-                    }
+                djModal.addEventListener('click', (e) => { if (e.target === djModal) closeModal(); });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && djModal.classList.contains('open')) closeModal();
+                    trapFocus(e);
                 });
                 // Al entrar a la consola, mostrar el modal explicativo una vez
-                setTimeout(() => {
-                    djModal.classList.add('open');
-                    djModal.setAttribute('aria-hidden', 'false');
-                }, 500);
+                setTimeout(openModal, 500);
             }
 
             // Biblioteca solo se carga al hacer clic en "Cargar pista" (evita bloqueo al abrir la página)

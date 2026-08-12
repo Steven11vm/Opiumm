@@ -2,14 +2,34 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Opium AI — Habla con Opium, tu asistente musical con IA.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#100d0c">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <title>Opium AI — Chat con tu asistente musical</title>
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Opium">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:title" content="Opium AI — Chat musical con IA">
+    <meta property="og:description" content="Habla con Opium, tu asistente musical con IA.">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ site_url }}/static/apple-touch-icon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Opium AI — Chat musical con IA">
+    <meta name="twitter:description" content="Habla con Opium, tu asistente musical con IA.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
     <link rel="stylesheet" href="/static/css/elegant.css">
     <script src="/static/js/loader.js" nonce="{{ csp_nonce }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -27,6 +47,8 @@
         </div>
         <span class="opium-loader-text">Cargando</span>
     </div>
+
+    <a href="#chatMessages" class="skip-link">Saltar al chat</a>
 
     <header>
         <nav aria-label="Navegación principal">

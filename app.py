@@ -154,10 +154,16 @@ def _writable_dir(subdir: str) -> Path:
 @app.before_request
 def _security_context():
     g.csp_nonce = base64.b64encode(secrets.token_bytes(16)).decode("ascii")
+    g.request_id = request.headers.get("X-Request-Id") or uuid.uuid4().hex[:16]
+    g.request_start = time.time()
 
 @app.context_processor
 def _inject_csp_nonce():
-    return {"csp_nonce": getattr(g, "csp_nonce", "")}
+    return {
+        "csp_nonce": getattr(g, "csp_nonce", ""),
+        "canonical_url": f"{request.headers.get('X-Forwarded-Proto', 'https')}://{request.host}{request.path}",
+        "site_url": f"{request.headers.get('X-Forwarded-Proto', 'https')}://{request.host}",
+    }
 
 @app.after_request
 def _apply_security_headers(resp: Response) -> Response:
@@ -189,6 +195,7 @@ def _apply_security_headers(resp: Response) -> Response:
     )
     resp.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
     resp.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+    resp.headers.setdefault("X-DNS-Prefetch-Control", "off")
     if not IS_DEBUG:
         resp.headers.setdefault(
             "Strict-Transport-Security",
@@ -197,6 +204,15 @@ def _apply_security_headers(resp: Response) -> Response:
     # No cache de HTML dinámico
     if resp.mimetype == "text/html":
         resp.headers.setdefault("Cache-Control", "no-store")
+
+    # Trazabilidad
+    rid = getattr(g, "request_id", "")
+    if rid:
+        resp.headers["X-Request-Id"] = rid
+    started = getattr(g, "request_start", None)
+    if started:
+        dur_ms = int((time.time() - started) * 1000)
+        resp.headers["Server-Timing"] = f"app;dur={dur_ms}"
     return resp
 
 # ------------------------------------------------------------------ #
@@ -282,14 +298,80 @@ def favicon():
     return send_from_directory(BASE_DIR / "static", "favicon.svg",
                                mimetype="image/svg+xml")
 
+@app.route("/apple-touch-icon.png")
+@app.route("/apple-touch-icon-precomposed.png")
+def apple_touch_icon():
+    return send_from_directory(BASE_DIR / "static", "apple-touch-icon.svg",
+                               mimetype="image/svg+xml")
+
+@app.route("/manifest.json")
+@app.route("/manifest.webmanifest")
+def manifest():
+    return send_from_directory(BASE_DIR / "static", "manifest.webmanifest",
+                               mimetype="application/manifest+json")
+
 @app.route("/robots.txt")
 def robots():
-    body = "User-agent: *\nAllow: /\nDisallow: /generate-beat\nDisallow: /chat\n"
-    return Response(body, mimetype="text/plain")
+    scheme = request.headers.get("X-Forwarded-Proto", "https")
+    host = request.host
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /generate-beat\n"
+        "Disallow: /chat\n"
+        "Disallow: /extract-instrumental\n"
+        "Disallow: /download-beat/\n"
+        "Disallow: /list-beats\n"
+        "Disallow: /list-music\n"
+        f"Sitemap: {scheme}://{host}/sitemap.xml\n"
+    )
+    resp = Response(body, mimetype="text/plain")
+    resp.headers["Cache-Control"] = "public, max-age=86400"
+    return resp
+
+@app.route("/sitemap.xml")
+def sitemap():
+    scheme = request.headers.get("X-Forwarded-Proto", "https")
+    host = request.host
+    urls = ["/", "/IAgotic", "/dj-console"]
+    items = "\n".join(
+        f"  <url>\n"
+        f"    <loc>{scheme}://{host}{u}</loc>\n"
+        f"    <changefreq>weekly</changefreq>\n"
+        f"    <priority>{ '1.0' if u == '/' else '0.8' }</priority>\n"
+        f"  </url>"
+        for u in urls
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{items}\n"
+        '</urlset>\n'
+    )
+    resp = Response(xml, mimetype="application/xml")
+    resp.headers["Cache-Control"] = "public, max-age=3600"
+    return resp
+
+@app.route("/.well-known/security.txt")
+@app.route("/security.txt")
+def security_txt():
+    scheme = request.headers.get("X-Forwarded-Proto", "https")
+    host = request.host
+    from datetime import datetime, timezone, timedelta
+    expires = (datetime.now(timezone.utc) + timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    body = (
+        f"Contact: mailto:security@{host}\n"
+        f"Expires: {expires}\n"
+        f"Preferred-Languages: es, en\n"
+        f"Canonical: {scheme}://{host}/.well-known/security.txt\n"
+    )
+    resp = Response(body, mimetype="text/plain")
+    resp.headers["Cache-Control"] = "public, max-age=86400"
+    return resp
 
 @app.route("/healthz")
 def healthz():
-    return jsonify({"ok": True})
+    return jsonify({"ok": True, "service": "opium", "vercel": IS_VERCEL})
 
 # ------------------------------------------------------------------ #
 #  API: generación de beats

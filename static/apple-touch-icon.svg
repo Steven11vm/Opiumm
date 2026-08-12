@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e6c14f"/>
+      <stop offset="60%" style="stop-color:#d4af37"/>
+      <stop offset="100%" style="stop-color:#8a6a1c"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1715"/>
+      <stop offset="100%" style="stop-color:#100d0c"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="36" fill="url(#bg)"/>
+  <circle cx="90" cy="90" r="60" fill="none" stroke="url(#g)" stroke-width="2" opacity=".6"/>
+  <circle cx="90" cy="90" r="42" fill="#0a0908" stroke="url(#g)" stroke-width="1"/>
+  <circle cx="90" cy="90" r="26" fill="none" stroke="url(#g)" stroke-width=".8" opacity=".5"/>
+  <text x="90" y="102" text-anchor="middle"
+        font-family="Playfair Display, Georgia, serif"
+        font-size="32" font-weight="500"
+        fill="url(#g)" letter-spacing="4">O</text>
+</svg>

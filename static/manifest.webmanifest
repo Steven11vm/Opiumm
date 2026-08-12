@@ -1,0 +1,28 @@
+{
+  "name": "Opium — Música con IA",
+  "short_name": "Opium",
+  "description": "Plataforma musical: crea beats con IA, mezcla en la consola DJ y extrae instrumentales.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#100d0c",
+  "background_color": "#100d0c",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["music", "entertainment", "productivity"],
+  "icons": [
+    {
+      "src": "/static/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ]
+}

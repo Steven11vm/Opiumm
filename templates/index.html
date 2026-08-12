@@ -2,17 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Opium — Plataforma musical con IA: crea beats, mezcla en la consola DJ y extrae instrumentales.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#100d0c">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <title>Opium — Música con IA, beats y consola DJ</title>
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Opium">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:title" content="Opium — Música con IA, beats y consola DJ">
+    <meta property="og:description" content="Crea beats con IA, mezcla en la consola DJ y extrae instrumentales.">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ site_url }}/static/apple-touch-icon.svg">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Opium — Música con IA">
+    <meta name="twitter:description" content="Crea beats con IA, mezcla en la consola DJ y extrae instrumentales.">
+    <meta name="twitter:image" content="{{ site_url }}/static/apple-touch-icon.svg">
+
+    <!-- Perf: preconnect fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="stylesheet" href="/static/css/elegant.css">
     <script src="/static/js/loader.js" nonce="{{ csp_nonce }}"></script>
     <script src="/static/js/toast.js" defer nonce="{{ csp_nonce }}"></script>
+
+    <!-- JSON-LD estructurado -->
+    <script type="application/ld+json" nonce="{{ csp_nonce }}">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Opium",
+      "url": "{{ site_url }}",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "description": "Plataforma musical con IA: crea beats, mezcla en la consola DJ y extrae instrumentales.",
+      "inLanguage": "es",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
 </head>
 <body>
     <!-- Pantalla de carga -->
@@ -25,30 +64,32 @@
         <span class="opium-loader-text">Cargando</span>
     </div>
 
+    <a href="#content" class="skip-link">Saltar al contenido</a>
+
     <!-- HERO ESTILO SUNO -->
     <section class="hero-wrap">
         <div class="hero-bg"></div>
         <div class="hero-video-wrap">
-            <video autoplay muted loop playsinline>
+            <video autoplay muted loop playsinline preload="metadata" disablepictureinpicture disableremoteplayback aria-hidden="true">
                 <source src="/static/videos/Calavera.mp4" type="video/mp4">
             </video>
         </div>
         <div class="hero-cards">
             <div class="hero-card" data-src="/static/Music/Conde.mp3" data-title="Conde" data-artist="Opium">
                 <a href="#" class="hero-card-link">
-                    <div class="hero-card-img"><img src="/static/images/I AM MUSIC.jpg" alt="Opium"></div>
+                    <div class="hero-card-img"><img src="/static/images/I AM MUSIC.jpg" alt="Opium — Portada I Am Music" loading="eager" fetchpriority="high" decoding="async"></div>
                     <div class="hero-card-info"><strong>Opium Mix</strong><span>Lo mejor del momento</span></div>
                 </a>
             </div>
             <div class="hero-card" data-src="/static/Music/bando.mp3" data-title="Bando" data-artist="Trap">
                 <a href="#" class="hero-card-link">
-                    <div class="hero-card-img"><img src="/static/images/KenCarson.jpg" alt=""></div>
+                    <div class="hero-card-img"><img src="/static/images/KenCarson.jpg" alt="Portada Ken Carson" loading="lazy" decoding="async"></div>
                     <div class="hero-card-info"><strong>Trap</strong><span>Beats</span></div>
                 </a>
             </div>
             <div class="hero-card" data-src="/static/Music/Magnolia.mp3" data-title="Magnolia" data-artist="Rage">
                 <a href="#" class="hero-card-link">
-                    <div class="hero-card-img"><img src="/static/images/Redcarti.jpg" alt=""></div>
+                    <div class="hero-card-img"><img src="/static/images/Redcarti.jpg" alt="Portada Playboi Carti" loading="lazy" decoding="async"></div>
                     <div class="hero-card-info"><strong>Rage</strong><span>Beats</span></div>
                 </a>
             </div>
@@ -120,7 +161,7 @@
 
     <div class="app main-wrap">
         <div class="section-bg">
-            <video autoplay muted loop playsinline>
+            <video autoplay muted loop playsinline preload="metadata" disablepictureinpicture disableremoteplayback aria-hidden="true">
                 <source src="/static/videos/Calavera.mp4" type="video/mp4">
             </video>
         </div>
@@ -258,7 +299,7 @@
                 <div class="suno-scroll">
                     <div class="suno-card" data-src="/static/Music/bando.mp3" data-title="Bando" data-artist="Trap">
                         <div class="suno-card-cover">
-                            <img src="/static/images/KenCarson.jpg" alt="">
+                            <img src="/static/images/KenCarson.jpg" alt="Portada Bando (Trap)" loading="lazy" decoding="async">
                             <div class="suno-card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
                             <div class="suno-card-stats">
                                 <span>► 128K</span>
@@ -270,7 +311,7 @@
                     </div>
                     <div class="suno-card" data-src="/static/Music/Magnolia.mp3" data-title="Magnolia" data-artist="Rage">
                         <div class="suno-card-cover">
-                            <img src="/static/images/Redcarti.jpg" alt="">
+                            <img src="/static/images/Redcarti.jpg" alt="Portada Magnolia (Rage)" loading="lazy" decoding="async">
                             <div class="suno-card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
                             <div class="suno-card-stats">
                                 <span>► 256K</span>
@@ -786,6 +827,7 @@
                 a.download = `opium-beat-${bpm}bpm.wav`;
                 a.click();
                 URL.revokeObjectURL(url);
+                OpiumToast.success('Beat descargado como opium-beat-' + bpm + 'bpm.wav', { title: 'Listo' });
             } catch (e) {
                 OpiumToast.error(e.message || 'No se pudo generar el beat.', { title: 'Error al generar' });
             } finally {
@@ -1160,6 +1202,7 @@
                 a.download = 'instrumental_' + baseName + '.wav';
                 a.click();
                 URL.revokeObjectURL(url);
+                OpiumToast.success('Instrumental listo: instrumental_' + baseName + '.wav', { title: 'Voces eliminadas' });
             } catch (err) {
                 OpiumToast.error(err.message || 'No se pudo extraer el instrumental. Asegúrate de que el archivo sea estéreo.', { title: 'Extracción fallida' });
             } finally {
