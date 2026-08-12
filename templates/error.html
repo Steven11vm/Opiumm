@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="color-scheme" content="dark">
+    <title>{{ code }} · {{ title }} — Opium</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/elegant.css">
+    <style nonce="{{ csp_nonce }}">
+        html, body { height: 100%; }
+        body { background: var(--bg); }
+        .err-shell {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .err-shell::before {
+            content: "";
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.06), transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(212,175,55,0.04), transparent 55%);
+            pointer-events: none;
+        }
+        .err-brand {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            letter-spacing: .3em;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+        .err-code {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(6rem, 22vw, 12rem);
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            color: var(--ivory);
+            margin: 0;
+            position: relative;
+            text-shadow: 0 8px 40px rgba(212,175,55,0.15);
+            background: linear-gradient(180deg, #f9f6f0 0%, #d4af37 60%, #8a6a1c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .err-divider {
+            width: 60px; height: 1px;
+            background: var(--gold-dim);
+            margin: 1.5rem auto 1.5rem;
+        }
+        .err-title {
+            font-family: var(--serif);
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            color: var(--gold);
+            margin: 0 0 1rem;
+            letter-spacing: .05em;
+        }
+        .err-msg {
+            color: var(--text-dim);
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        .err-actions {
+            display: flex; gap: 1rem;
+            flex-wrap: wrap; justify-content: center;
+        }
+        .err-btn {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .9rem 1.75rem;
+            font-family: var(--sans);
+            font-size: .82rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            border-radius: var(--rsm);
+            transition: transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
+            border: 1px solid var(--gold-dim);
+            text-decoration: none;
+        }
+        .err-btn-primary {
+            background: var(--gold);
+            color: var(--text-dark);
+            border-color: var(--gold);
+        }
+        .err-btn-primary:hover {
+            transform: translateY(-2px);
+            background: #e6c14f;
+            color: var(--text-dark);
+        }
+        .err-btn-ghost {
+            background: transparent;
+            color: var(--gold);
+        }
+        .err-btn-ghost:hover {
+            background: var(--gold);
+            color: var(--text-dark);
+        }
+        .err-hint {
+            margin-top: 3rem;
+            font-size: .72rem;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            opacity: .5;
+        }
+        .err-glitch {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            height: 2px;
+            margin: 1.5rem auto 0;
+            background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+            opacity: .35;
+            animation: scan 3.2s ease-in-out infinite;
+        }
+        @keyframes scan {
+            0%, 100% { transform: translateX(-20px); opacity: 0.15; }
+            50%      { transform: translateX(20px);  opacity: 0.55; }
+        }
+    </style>
+</head>
+<body>
+    <main class="err-shell" role="main">
+        <a href="/" class="err-brand" aria-label="Volver a Opium">OPIUM</a>
+
+        <h1 class="err-code" aria-label="Código {{ code }}">{{ code }}</h1>
+        <span class="err-glitch" aria-hidden="true"></span>
+        <div class="err-divider" aria-hidden="true"></div>
+
+        <h2 class="err-title">{{ title }}</h2>
+        <p class="err-msg">{{ message }}</p>
+
+        <div class="err-actions">
+            <a href="/" class="err-btn err-btn-primary" rel="noopener">Volver al inicio</a>
+            <a href="/dj-console" class="err-btn err-btn-ghost" rel="noopener">Ir a la consola DJ</a>
+        </div>
+
+        <p class="err-hint">Opium · Plataforma musical</p>
+    </main>
+</body>
+</html>

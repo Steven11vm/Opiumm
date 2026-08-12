@@ -1,251 +1,220 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Gótica de Música</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/gotic.css') }}">
-    <style>
-      
-        .chat-container {
-            max-width: 800px;
-            margin: 80px auto 0;
-            padding: 20px;
-            background-color: #201c1c;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(56, 54, 54, 0.1);
-        }
-        .chat-messages {
-            max-height: 500px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-        .message {
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 10px;
-            line-height: 1.5;
-        }
-        .user-message {
-            background-color: #292525;
-            text-align: right;
-        }
-        .bot-message {
-            background-color: #2b2626;
-        }
-        .message-content {
-            max-width: 100%;
-            overflow-wrap: break-word;
-        }
-        .message-content p {
-            margin: 0;
-        }
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        .loading img {
-            width: 50px;
-            height: 50px;
-            filter: hue-rotate(300deg);
-        }
-        .chat-input-wrapper {
-            display: flex;
-            margin-top: 20px;
-        }
-        .chat-input {
-            flex-grow: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px 0 0 5px;
-           
-            color: #e0e0e0;
-        }
-        .send-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 0 5px 5px 0;
-            background-color: #000000;
-            color: #e0e0e0;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .send-button:hover {
-            background-color: #000000;
-        }
-        .send-button svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-    </style>
+    <meta name="description" content="Opium AI — Habla con Opium, tu asistente musical con IA.">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="color-scheme" content="dark">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <title>Opium AI — Chat con tu asistente musical</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/elegant.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" nonce="{{ csp_nonce }}"></script>
+    <script src="/static/js/toast.js" defer nonce="{{ csp_nonce }}"></script>
 </head>
 <body>
     <header>
-        <nav>
+        <nav aria-label="Navegación principal">
             <ul>
-                <li><a href="{{ url_for('index') }}">INICIO</a></li>
-                <li><a href="{{ url_for('sobre_la_ia') }}">HABLA CON LA IA</a></li>
-                <li><a href="#artists">ARTISTAS</a></li>
-                <li><a href="#generate">GENERAR</a></li>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/IAgotic" class="active" aria-current="page">IA Chat</a></li>
+                <li><a href="/dj-console">Consola DJ</a></li>
+                <li><a href="/#generate">Generar</a></li>
             </ul>
         </nav>
     </header>
 
-    <div class="chat-container">
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">
-                <div class="message-content">
-                    <p>{{ greeting }}</p>
+    <main class="chat-container" role="main">
+        <div class="chat-box">
+            <div class="chat-messages" id="chatMessages" aria-live="polite" aria-label="Mensajes del chat">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <p>Hola, soy <strong>Opium</strong>, tu asistente de música. Pregúntame lo que quieras. Para <strong>crear música</strong>, ve a <a href="/#generate">Inicio → Consola DJ</a>.</p>
+                    </div>
                 </div>
             </div>
+            <div class="chat-input-area">
+                <form id="chatForm" class="chat-input-wrapper" action="#" method="post" autocomplete="off">
+                    <input type="text" id="userInput" class="chat-input"
+                           placeholder="Escribe y pulsa Enter para enviar…"
+                           autocomplete="off" spellcheck="true"
+                           maxlength="4000"
+                           aria-label="Mensaje">
+                    <button type="submit" class="send-button" id="sendBtn" aria-label="Enviar mensaje">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="stop-button" id="stopButton" aria-label="Detener respuesta">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M5 5h4v14H5V5zm10 0h4v14h-4V5z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
-        <form id="chatForm" class="chat-input-wrapper">
-            <input type="text" id="userInput" class="chat-input" placeholder="Escribe tu mensaje..." aria-label="Campo de entrada para el mensaje">
-            <button type="submit" class="send-button" aria-label="Enviar mensaje">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                </svg>
-            </button>
-        </form>
-    </div>
-    <script>
-        $(document).ready(function() {
-         var loadingImageUrl = "{{ url_for('static', filename='images/bat.png') }}";
-         var MAX_MESSAGE_LENGTH = 500; // Ajusta este valor según sea necesario
-    
-         $('#chatForm').on('submit', function(e) {
-             e.preventDefault();
-             var userInput = $('#userInput').val();
-             if (userInput.trim() !== '') {
-                 var messages = splitMessage(userInput);
-                 sendMessages(messages);
-                 $('#userInput').val('');
-             }
-         });
-    
-         function splitMessage(message) {
-             var messages = [];
-             while (message.length > 0) {
-                 if (message.length <= MAX_MESSAGE_LENGTH) {
-                     messages.push(message);
-                     break;
-                 }
-                 var splitIndex = message.lastIndexOf(' ', MAX_MESSAGE_LENGTH);
-                 if (splitIndex === -1) splitIndex = MAX_MESSAGE_LENGTH;
-                 messages.push(message.substring(0, splitIndex));
-                 message = message.substring(splitIndex).trim();
-             }
-             return messages;
-         }
-    
-         function sendMessages(messages) {
-             addMessage('user', messages.join(' '));
-             showLoading();
-             
-             function sendNextMessage(index) {
-                 if (index >= messages.length) {
-                     hideLoading();
-                     return;
-                 }
-                 
-                 $.ajax({
-                     url: '/chat',
-                     method: 'POST',
-                     data: { user_input: messages[index] },
-                     success: function(response) {
-                         if (index === messages.length - 1) {
-                             hideLoading();
-                             addMessage('bot', response.response);
-                         }
-                         sendNextMessage(index + 1);
-                     },
-                     error: function() {
-                         hideLoading();
-                         addMessage('bot', 'Lo siento, ha ocurrido un error.');
-                     }
-                 });
-             }
-    
-             sendNextMessage(0);
-         }
-    
-         function addMessage(sender, message) {
-             var messageClass = sender === 'user' ? 'user-message' : 'bot-message';
-             var formattedMessage = formatMessage(message);
-             var messageHtml = '<div class="message ' + messageClass + '"><div class="message-content">' + formattedMessage + '</div></div>';
-             $('#chatMessages').append(messageHtml);
-             $('#chatMessages').animate({scrollTop: 0}, 'slow');
-    
-         }
-    
-         function formatMessage(message) {
-             // Reemplazar ** con etiquetas <strong>
-             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-             // Reemplazar saltos de línea con <br>
-             message = message.replace(/\n/g, '<br>');
-             return message;
-         }
-    
-         function showLoading() {
-             var loadingHtml = '<div class="loading"><img src="' + loadingImageUrl + '" alt="Cargando..."></div>';
-             $('#chatMessages').append(loadingHtml);
-             $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
-         }
-    
-         function hideLoading() {
-             $('.loading').remove();
-         }
-     });
+    </main>
+
+    <script nonce="{{ csp_nonce }}">
+        $(function () {
+            const MAX_MESSAGE_LENGTH = 500;
+            let currentXhr = null;
+            let isStopped = false;
+            let typingActive = false;
+
+            $('#chatForm').on('submit', function (e) {
+                e.preventDefault();
+                sendCurrentMessage();
+            });
+
+            $('#userInput').on('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendCurrentMessage();
+                }
+            });
+
+            function sendCurrentMessage() {
+                const raw = ($('#userInput').val() || '').trim();
+                if (!raw) return;
+                if (raw.length > 4000) {
+                    OpiumToast.warning('Máximo 4000 caracteres por mensaje.', { title: 'Mensaje muy largo' });
+                    return;
+                }
+                $('#userInput').val('');
+                sendMessages(splitMessage(raw));
+            }
+
+            function splitMessage(msg) {
+                const arr = [];
+                while (msg.length > 0) {
+                    if (msg.length <= MAX_MESSAGE_LENGTH) { arr.push(msg); break; }
+                    let i = msg.lastIndexOf(' ', MAX_MESSAGE_LENGTH);
+                    if (i === -1) i = MAX_MESSAGE_LENGTH;
+                    arr.push(msg.substring(0, i));
+                    msg = msg.substring(i).trim();
+                }
+                return arr;
+            }
+
+            function sendMessages(msgs) {
+                addMessage('user', msgs.join(' '));
+                showLoading();
+                isStopped = false;
+                typingActive = false;
+                toggleGenerating(true);
+
+                function sendNext(idx) {
+                    if (idx >= msgs.length || isStopped) {
+                        hideLoading();
+                        toggleGenerating(false);
+                        return;
+                    }
+                    currentXhr = $.ajax({
+                        url: '/chat',
+                        method: 'POST',
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        data: { user_input: msgs[idx] },
+                        success: function (res) {
+                            currentXhr = null;
+                            if (idx === msgs.length - 1 && !isStopped) {
+                                hideLoading();
+                                const text = (res && res.response) ? res.response : 'Sin respuesta.';
+                                addMessage('bot', text);
+                                toggleGenerating(false);
+                            }
+                            sendNext(idx + 1);
+                        },
+                        error: function (xhr, status) {
+                            currentXhr = null;
+                            hideLoading();
+                            let msg = 'Error de conexión.';
+                            if (status === 'abort' || isStopped) msg = 'Detenido.';
+                            else if (xhr.responseJSON && xhr.responseJSON.error) msg = xhr.responseJSON.error;
+                            else if (xhr.status === 429) msg = 'Demasiadas peticiones. Espera un momento.';
+                            else if (xhr.status === 500) msg = 'Error del servidor. Revisa la configuración de la IA.';
+                            addMessage('bot', msg);
+                            OpiumToast.error(msg);
+                            toggleGenerating(false);
+                        }
+                    });
+                }
+                sendNext(0);
+            }
+
+            function toggleGenerating(on) {
+                if (on) {
+                    $('.send-button').hide();
+                    $('.stop-button').addClass('visible');
+                } else {
+                    $('.send-button').show();
+                    $('.stop-button').removeClass('visible');
+                }
+            }
+
+            $('#stopButton').on('click', function () {
+                isStopped = true;
+                typingActive = false;
+                if (currentXhr) currentXhr.abort();
+                hideLoading();
+                toggleGenerating(false);
+            });
+
+            function addMessage(sender, text) {
+                const cls = sender === 'user' ? 'user-message' : 'bot-message';
+                const $el = $('<div class="message ' + cls + '"><div class="message-content"></div></div>');
+                $('#chatMessages').append($el);
+
+                if (sender === 'bot') {
+                    typeWriter($el.find('.message-content'), text);
+                } else {
+                    $el.find('.message-content').html(format(text));
+                }
+                scrollBottom();
+            }
+
+            function typeWriter($el, text, speed) {
+                speed = speed || 18;
+                typingActive = true;
+                let i = 0;
+                (function step() {
+                    if (i < text.length && typingActive && !isStopped) {
+                        $el.html(format(text.substring(0, i + 1)));
+                        i++;
+                        scrollBottom();
+                        setTimeout(step, speed);
+                    } else {
+                        typingActive = false;
+                    }
+                })();
+            }
+
+            function format(t) {
+                const div = document.createElement('div');
+                div.textContent = t == null ? '' : String(t);
+                let safe = div.innerHTML;
+                safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                safe = safe.replace(/\n/g, '<br>');
+                return safe;
+            }
+
+            function scrollBottom() {
+                const el = document.getElementById('chatMessages');
+                if (el) el.scrollTop = el.scrollHeight;
+            }
+
+            function showLoading() {
+                $('#chatMessages').append(
+                    '<div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>'
+                );
+                scrollBottom();
+            }
+            function hideLoading() { $('.loading').remove(); }
+        });
     </script>
-    
-    
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    

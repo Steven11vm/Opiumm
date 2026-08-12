@@ -1,0 +1,6 @@
+flask
+google-generativeai
+pydub
+werkzeug
+imageio-ffmpeg
+python-dotenv

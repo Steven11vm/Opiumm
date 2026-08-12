@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Consola DJ Opium — Dos platos, crossfader, EQ y grabación de sesión.">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="color-scheme" content="dark">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <title>Consola DJ — Opium</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/elegant.css">
+    <script src="/static/js/toast.js" defer nonce="{{ csp_nonce }}"></script>
+</head>
+<body>
+    <div class="console-wrap">
+        <header class="header-dj">
+            <a href="/" class="logo">OPIUM</a>
+            <nav class="header-dj-nav" aria-label="Navegación principal">
+                <a href="/">Inicio</a>
+                <a href="/#ai">IA</a>
+                <a href="/dj-console" class="active">Consola DJ</a>
+                <a href="/#suno">Lo que suena</a>
+                <a href="/#upload">Quitar vocales</a>
+                <button type="button" class="header-dj-info" id="djInfoBtn" aria-label="¿Qué es la Consola DJ?">?</button>
+            </nav>
+        </header>
+
+        <!-- Modal: explicación del apartado -->
+        <div class="dj-modal-overlay" id="djModal" aria-hidden="true">
+            <div class="dj-modal" role="dialog" aria-labelledby="djModalTitle">
+                <div class="dj-modal-header">
+                    <h2 id="djModalTitle">¿Qué es la Consola DJ?</h2>
+                    <button type="button" class="dj-modal-close" id="djModalClose" aria-label="Cerrar">×</button>
+                </div>
+                <div class="dj-modal-body">
+                    <p>Aquí puedes <strong>mezclar música en vivo</strong> con dos platos (Deck A y Deck B), igual que en una consola de DJ.</p>
+                    <p><strong>Deck A y Deck B:</strong> En cada plato puedes cargar una pista desde la biblioteca (abajo). El <strong>disco</strong> que ves gira cuando la pista está sonando. Los botones <strong>C</strong> (cue), <strong>▶</strong> (play) y <strong>■</strong> (stop) controlan la reproducción. Con <strong>Pitch / Tempo</strong> cambias la velocidad; con <strong>Volumen</strong> y los ecualizadores <strong>Low, Mid, High</strong> ajustas el sonido.</p>
+                    <p><strong>Crossfader:</strong> Desliza para pasar el sonido de un plato al otro (izquierda = más Deck A, derecha = más Deck B). <strong>Master</strong> controla el volumen general.</p>
+                    <p><strong>Grabar sesión:</strong> Graba tu mezcla en vivo y descarga el archivo cuando termines.</p>
+                    <p>Las <strong>barras de ritmo</strong> bajo cada plato reaccionan a la música que suena. ¡Carga pistas desde la biblioteca y empieza a mezclar!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deck A -->
+        <section class="deck deck-a">
+            <span class="deck-title">Deck A</span>
+            <div class="deck-platter">
+                <div class="deck-vinyl" id="vinylA" aria-hidden="true">
+                    <span class="deck-vinyl-label">A</span>
+                </div>
+            </div>
+            <div class="deck-wave"><canvas id="waveA" width="200" height="44"></canvas></div>
+            <div class="deck-rhythm" id="rhythmA" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <button type="button" class="deck-load" id="loadA">Cargar pista...</button>
+            <div class="deck-controls">
+                <button type="button" class="deck-btn" id="cueA" title="Cue">C</button>
+                <button type="button" class="deck-btn play" id="playA" title="Play">▶</button>
+                <button type="button" class="deck-btn" id="stopA" title="Stop">■</button>
+            </div>
+            <div class="pitch-wrap">
+                <label>Pitch / Tempo</label>
+                <input type="range" id="pitchA" min="0.5" max="2" step="0.01" value="1">
+                <span class="pitch-value" id="pitchValA">100%</span>
+            </div>
+            <div class="fader-wrap">
+                <label>Volumen</label>
+                <input type="range" class="fader-v" id="volA" min="0" max="100" value="80">
+            </div>
+            <div class="eq-group">
+                <label>Low</label>
+                <input type="range" id="eqLowA" min="-12" max="12" value="0">
+                <label>Mid</label>
+                <input type="range" id="eqMidA" min="-12" max="12" value="0">
+                <label>High</label>
+                <input type="range" id="eqHighA" min="-12" max="12" value="0">
+            </div>
+            <span class="time-display" id="timeA">--:-- / --:--</span>
+        </section>
+
+        <!-- Mixer -->
+        <section class="mixer">
+            <div class="crossfader-wrap">
+                <label>Crossfader (A ← → B)</label>
+                <input type="range" id="crossfader" min="0" max="100" value="50">
+            </div>
+            <div class="fader-wrap">
+                <label>Master</label>
+                <input type="range" class="fader-v" id="masterVol" min="0" max="100" value="70">
+            </div>
+            <div class="master-section">
+                <label>Grabar sesión (mezcla en vivo)</label>
+                <button type="button" class="record-btn" id="recordBtn">⏺ Grabar disco / sesión</button>
+            </div>
+        </section>
+
+        <!-- Deck B -->
+        <section class="deck deck-b">
+            <span class="deck-title">Deck B</span>
+            <div class="deck-platter">
+                <div class="deck-vinyl" id="vinylB" aria-hidden="true">
+                    <span class="deck-vinyl-label">B</span>
+                </div>
+            </div>
+            <div class="deck-wave"><canvas id="waveB" width="200" height="44"></canvas></div>
+            <div class="deck-rhythm" id="rhythmB" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <button type="button" class="deck-load" id="loadB">Cargar pista...</button>
+            <div class="deck-controls">
+                <button type="button" class="deck-btn" id="cueB" title="Cue">C</button>
+                <button type="button" class="deck-btn play" id="playB" title="Play">▶</button>
+                <button type="button" class="deck-btn" id="stopB" title="Stop">■</button>
+            </div>
+            <div class="pitch-wrap">
+                <label>Pitch / Tempo</label>
+                <input type="range" id="pitchB" min="0.5" max="2" step="0.01" value="1">
+                <span class="pitch-value" id="pitchValB">100%</span>
+            </div>
+            <div class="fader-wrap">
+                <label>Volumen</label>
+                <input type="range" class="fader-v" id="volB" min="0" max="100" value="80">
+            </div>
+            <div class="eq-group">
+                <label>Low</label>
+                <input type="range" id="eqLowB" min="-12" max="12" value="0">
+                <label>Mid</label>
+                <input type="range" id="eqMidB" min="-12" max="12" value="0">
+                <label>High</label>
+                <input type="range" id="eqHighB" min="-12" max="12" value="0">
+            </div>
+            <span class="time-display" id="timeB">--:-- / --:--</span>
+        </section>
+
+        <!-- Library -->
+        <section class="library">
+            <h3>Biblioteca — Clic para cargar en Deck A o B</h3>
+            <div class="library-grid" id="libraryGrid"></div>
+        </section>
+
+        <footer class="app-footer-dj">
+            <a href="/" class="logo-footer">OPIUM</a>
+            <nav class="app-footer-dj-nav" aria-label="Pie de página">
+                <a href="/">Inicio</a>
+                <a href="/#ai">IA</a>
+                <a href="/dj-console">Consola DJ</a>
+                <a href="/#suno">Lo que suena</a>
+                <a href="/#upload">Quitar vocales</a>
+            </nav>
+            <p class="app-footer-dj-credits">Creado por <strong>Steven Villamizar Mendoza</strong></p>
+        </footer>
+    </div>
+
+    <script nonce="{{ csp_nonce }}">
+        (function() {
+            let ctx = null;
+            let masterGain = null;
+            let destForRecord = null;
+            let libraryTracks = [];
+            const decks = { A: null, B: null };
+
+            let analyserA = null;
+            let analyserB = null;
+
+            function ensureContext() {
+                if (ctx) return ctx;
+                ctx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = ctx.createGain();
+                masterGain.gain.value = 0.7;
+                masterGain.connect(ctx.destination);
+                destForRecord = ctx.createMediaStreamDestination();
+                masterGain.connect(destForRecord);
+                decks.A = createDeck('A');
+                decks.B = createDeck('B');
+                analyserA = ctx.createAnalyser();
+                analyserA.fftSize = 64;
+                analyserA.smoothingTimeConstant = 0.6;
+                analyserB = ctx.createAnalyser();
+                analyserB.fftSize = 64;
+                analyserB.smoothingTimeConstant = 0.6;
+                decks.A.gain.disconnect(masterGain);
+                decks.A.gain.connect(analyserA);
+                analyserA.connect(masterGain);
+                decks.B.gain.disconnect(masterGain);
+                decks.B.gain.connect(analyserB);
+                analyserB.connect(masterGain);
+                updateCrossfader();
+                requestAnimationFrame(updateRhythm);
+                return ctx;
+            }
+
+            function updateRhythm() {
+                if (ctx && analyserA && analyserB) {
+                    const dataA = new Uint8Array(analyserA.frequencyBinCount);
+                    const dataB = new Uint8Array(analyserB.frequencyBinCount);
+                    analyserA.getByteFrequencyData(dataA);
+                    analyserB.getByteFrequencyData(dataB);
+                    const barsA = document.querySelectorAll('#rhythmA span');
+                    const barsB = document.querySelectorAll('#rhythmB span');
+                    const len = Math.min(10, dataA.length, dataB.length);
+                    for (let i = 0; i < barsA.length; i++) {
+                        const k = Math.min(Math.floor((i / barsA.length) * dataA.length), dataA.length - 1);
+                        const v = dataA[k] || 0;
+                        const h = Math.max(4, (v / 255) * 28);
+                        barsA[i].style.height = h + 'px';
+                    }
+                    for (let i = 0; i < barsB.length; i++) {
+                        const k = Math.min(Math.floor((i / barsB.length) * dataB.length), dataB.length - 1);
+                        const v = dataB[k] || 0;
+                        const h = Math.max(4, (v / 255) * 28);
+                        barsB[i].style.height = h + 'px';
+                    }
+                }
+                requestAnimationFrame(updateRhythm);
+            }
+            requestAnimationFrame(updateRhythm);
+
+            function createDeck(id) {
+                const gain = ctx.createGain();
+                gain.gain.value = 0.8;
+                gain.connect(masterGain);
+                const lowEq = ctx.createBiquadFilter();
+                lowEq.type = 'lowshelf';
+                lowEq.frequency.value = 320;
+                lowEq.gain.value = 0;
+                const midEq = ctx.createBiquadFilter();
+                midEq.type = 'peaking';
+                midEq.frequency.value = 1000;
+                midEq.Q.value = 0.7;
+                midEq.gain.value = 0;
+                const highEq = ctx.createBiquadFilter();
+                highEq.type = 'highshelf';
+                highEq.frequency.value = 3200;
+                highEq.gain.value = 0;
+                lowEq.connect(midEq);
+                midEq.connect(highEq);
+                highEq.connect(gain);
+                return {
+                    id,
+                    gain,
+                    lowEq, midEq, highEq,
+                    source: null,
+                    buffer: null,
+                    name: null,
+                    playing: false,
+                    cuePoint: 0,
+                    startOffset: 0,
+                    startTime: 0,
+                    pitch: 1
+                };
+            }
+
+            function loadTrack(deckId, url, name) {
+                ensureContext();
+                const deck = decks[deckId];
+                return fetch(url)
+                    .then(r => r.arrayBuffer())
+                    .then(buf => ctx.decodeAudioData(buf))
+                    .then(buffer => {
+                        deck.buffer = buffer;
+                        deck.name = name || url.split('/').pop();
+                        deck.startOffset = 0;
+                        deck.cuePoint = 0;
+                        document.getElementById('load' + deckId).textContent = deck.name;
+                        requestAnimationFrame(() => drawWaveform(deckId));
+                        updateTime(deckId);
+                        return deck;
+                    });
+            }
+
+            function drawWaveform(deckId) {
+                const deck = decks[deckId];
+                const canvas = document.getElementById('wave' + deckId);
+                if (!canvas || !deck || !deck.buffer) return;
+                const g = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+                g.fillStyle = 'rgba(0,0,0,0.4)';
+                g.fillRect(0, 0, w, h);
+                const data = deck.buffer.getChannelData(0);
+                const len = data.length;
+                const step = Math.max(1, Math.floor(len / w));
+                g.fillStyle = deckId === 'A' ? '#1db954' : '#ed8936';
+                for (let i = 0; i < w; i++) {
+                    const k = Math.min(i * step, len - 1);
+                    const v = Math.abs(data[k]) * h * 0.8;
+                    g.fillRect(i, (h - v) / 2, 1, v);
+                }
+            }
+
+            function updateTime(deckId) {
+                if (!ctx) return;
+                const deck = decks[deckId];
+                const el = document.getElementById('time' + deckId);
+                if (!el || !deck || !deck.buffer) { if (el) el.textContent = '--:-- / --:--'; return; }
+                const dur = deck.buffer.duration;
+                const pos = deck.playing ? (ctx.currentTime - deck.startTime) * deck.pitch + deck.startOffset : deck.startOffset;
+                const p = Math.min(pos, dur);
+                el.textContent = fmt(p) + ' / ' + fmt(dur);
+            }
+
+            function fmt(s) {
+                const m = Math.floor(s / 60);
+                const sec = Math.floor(s % 60);
+                return m + ':' + (sec < 10 ? '0' : '') + sec;
+            }
+
+            function stop(deckId) {
+                const deck = decks[deckId];
+                if (!deck) return;
+                if (deck.source) {
+                    try { deck.source.stop(); } catch (_) {}
+                    deck.source = null;
+                }
+                deck.playing = false;
+                deck.startOffset = 0;
+                updateTime(deckId);
+                document.getElementById('play' + deckId).classList.remove('active');
+                const vinylEl = document.getElementById('vinyl' + deckId);
+                if (vinylEl) vinylEl.classList.remove('spin');
+            }
+
+            function play(deckId, fromCue) {
+                ensureContext();
+                const deck = decks[deckId];
+                if (!deck || !deck.buffer) return;
+                ctx.resume();
+                if (deck.source) try { deck.source.stop(); } catch (_) {}
+                const src = ctx.createBufferSource();
+                src.buffer = deck.buffer;
+                src.playbackRate.value = deck.pitch;
+                const startAt = fromCue ? deck.cuePoint : deck.startOffset;
+                src.connect(deck.lowEq);
+                src.start(ctx.currentTime, startAt);
+                deck.source = src;
+                deck.startTime = ctx.currentTime;
+                deck.startOffset = startAt;
+                deck.playing = true;
+                document.getElementById('play' + deckId).classList.add('active');
+                const vinylEl = document.getElementById('vinyl' + deckId);
+                if (vinylEl) vinylEl.classList.add('spin');
+                src.onended = () => {
+                    deck.playing = false;
+                    deck.source = null;
+                    deck.startOffset = 0;
+                    document.getElementById('play' + deckId).classList.remove('active');
+                    if (vinylEl) vinylEl.classList.remove('spin');
+                    updateTime(deckId);
+                };
+            }
+
+            function cue(deckId) {
+                ensureContext();
+                const deck = decks[deckId];
+                if (!deck || !deck.buffer) return;
+                if (deck.playing) {
+                    deck.startOffset = (ctx.currentTime - deck.startTime) * deck.pitch + deck.startOffset;
+                    if (deck.source) try { deck.source.stop(); } catch (_) {}
+                    deck.source = null;
+                    deck.playing = false;
+                    document.getElementById('play' + deckId).classList.remove('active');
+                }
+                deck.cuePoint = deck.startOffset;
+                play(deckId, true);
+                setTimeout(() => {
+                    if (deck.source) try { deck.source.stop(); } catch (_) {}
+                    deck.source = null;
+                    deck.playing = false;
+                    document.getElementById('play' + deckId).classList.remove('active');
+                }, 200);
+            }
+
+            function togglePlay(deckId) {
+                ensureContext();
+                const deck = decks[deckId];
+                if (!deck || !deck.buffer) return;
+                if (deck.playing) {
+                    deck.startOffset = (ctx.currentTime - deck.startTime) * deck.pitch + deck.startOffset;
+                    if (deck.source) try { deck.source.stop(); } catch (_) {}
+                    deck.source = null;
+                    deck.playing = false;
+                    document.getElementById('play' + deckId).classList.remove('active');
+                    const v = document.getElementById('vinyl' + deckId);
+                    if (v) v.classList.remove('spin');
+                } else {
+                    play(deckId, false);
+                }
+            }
+
+            setInterval(() => { if (decks.A) updateTime('A'); if (decks.B) updateTime('B'); }, 500);
+
+            document.getElementById('loadA').onclick = () => showLibrary('A');
+            document.getElementById('loadB').onclick = () => showLibrary('B');
+
+            function showLibrary(targetDeck) {
+                const grid = document.getElementById('libraryGrid');
+                grid.innerHTML = '';
+                if (libraryTracks.length === 0) {
+                    grid.innerHTML = '<span class="library-item">Cargando...</span>';
+                    fetchLibrary().then(() => showLibrary(targetDeck));
+                    return;
+                }
+                libraryTracks.forEach(t => {
+                    const el = document.createElement('div');
+                    el.className = 'library-item';
+                    el.innerHTML = `<span class="type">${t.type}</span><br>${t.name}`;
+                    el.onclick = () => loadTrack(targetDeck, t.path, t.name).catch(e => OpiumToast.error(e.message || 'No se pudo cargar la pista.', { title: 'Error al cargar' }));
+                    grid.appendChild(el);
+                });
+            }
+
+            function fetchLibrary() {
+                return fetch('/list-music')
+                    .then(r => r.json())
+                    .then(data => {
+                        libraryTracks = (data.music || []).concat(data.beats || []);
+                        return libraryTracks;
+                    })
+                    .catch(() => { libraryTracks = []; });
+            }
+
+            document.getElementById('cueA').onclick = () => cue('A');
+            document.getElementById('cueB').onclick = () => cue('B');
+            document.getElementById('playA').onclick = () => togglePlay('A');
+            document.getElementById('playB').onclick = () => togglePlay('B');
+            document.getElementById('stopA').onclick = () => stop('A');
+            document.getElementById('stopB').onclick = () => stop('B');
+
+            document.getElementById('pitchA').oninput = function() {
+                if (decks.A) { decks.A.pitch = +this.value; if (decks.A.source) decks.A.source.playbackRate.value = decks.A.pitch; }
+                document.getElementById('pitchValA').textContent = Math.round(this.value * 100) + '%';
+            };
+            document.getElementById('pitchB').oninput = function() {
+                if (decks.B) { decks.B.pitch = +this.value; if (decks.B.source) decks.B.source.playbackRate.value = decks.B.pitch; }
+                document.getElementById('pitchValB').textContent = Math.round(this.value * 100) + '%';
+            };
+
+            function updateCrossfader() {
+                if (!ctx || !decks.A || !decks.B) return;
+                const x = document.getElementById('crossfader').value / 100;
+                const volA = document.getElementById('volA').value / 100;
+                const volB = document.getElementById('volB').value / 100;
+                decks.A.gain.gain.setTargetAtTime(volA * (1 - x), ctx.currentTime, 0.02);
+                decks.B.gain.gain.setTargetAtTime(volB * x, ctx.currentTime, 0.02);
+            }
+
+            document.getElementById('volA').oninput = function() { ensureContext(); updateCrossfader(); };
+            document.getElementById('volB').oninput = function() { ensureContext(); updateCrossfader(); };
+
+            document.getElementById('eqLowA').oninput = function() { if (decks.A) decks.A.lowEq.gain.value = +this.value; };
+            document.getElementById('eqMidA').oninput = function() { if (decks.A) decks.A.midEq.gain.value = +this.value; };
+            document.getElementById('eqHighA').oninput = function() { if (decks.A) decks.A.highEq.gain.value = +this.value; };
+            document.getElementById('eqLowB').oninput = function() { if (decks.B) decks.B.lowEq.gain.value = +this.value; };
+            document.getElementById('eqMidB').oninput = function() { if (decks.B) decks.B.midEq.gain.value = +this.value; };
+            document.getElementById('eqHighB').oninput = function() { if (decks.B) decks.B.highEq.gain.value = +this.value; };
+
+            document.getElementById('crossfader').oninput = function() { ensureContext(); updateCrossfader(); };
+            document.getElementById('masterVol').oninput = function() {
+                ensureContext();
+                if (masterGain) masterGain.gain.value = this.value / 100 * 0.85;
+            };
+
+            let mediaRecorder = null;
+            let recordedChunks = [];
+            const recordBtn = document.getElementById('recordBtn');
+            recordBtn.onclick = function() {
+                ensureContext();
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                    recordBtn.textContent = '⏺ Grabar disco / sesión';
+                    recordBtn.classList.remove('recording');
+                    return;
+                }
+                recordedChunks = [];
+                const stream = destForRecord.stream;
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                mediaRecorder.ondataavailable = e => { if (e.data.size) recordedChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'opium-dj-session-' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.webm';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+                mediaRecorder.start();
+                recordBtn.textContent = '⏹ Parar grabación';
+                recordBtn.classList.add('recording');
+            };
+
+            // Modal explicativo
+            const djModal = document.getElementById('djModal');
+            const djInfoBtn = document.getElementById('djInfoBtn');
+            const djModalClose = document.getElementById('djModalClose');
+            if (djInfoBtn && djModal) {
+                djInfoBtn.addEventListener('click', () => {
+                    djModal.classList.add('open');
+                    djModal.setAttribute('aria-hidden', 'false');
+                });
+            }
+            if (djModalClose && djModal) {
+                djModalClose.addEventListener('click', () => {
+                    djModal.classList.remove('open');
+                    djModal.setAttribute('aria-hidden', 'true');
+                });
+            }
+            if (djModal) {
+                djModal.addEventListener('click', (e) => {
+                    if (e.target === djModal) {
+                        djModal.classList.remove('open');
+                        djModal.setAttribute('aria-hidden', 'true');
+                    }
+                });
+                // Al entrar a la consola, mostrar el modal explicativo una vez
+                setTimeout(() => {
+                    djModal.classList.add('open');
+                    djModal.setAttribute('aria-hidden', 'false');
+                }, 500);
+            }
+
+            // Biblioteca solo se carga al hacer clic en "Cargar pista" (evita bloqueo al abrir la página)
+        })();
+    </script>
+</body>
+</html>

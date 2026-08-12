@@ -1,393 +1,1309 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opium</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Opium — Plataforma musical con IA: crea beats, mezcla en la consola DJ y extrae instrumentales.">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="color-scheme" content="dark">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <title>Opium — Música con IA, beats y consola DJ</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/elegant.css">
+    <script src="/static/js/toast.js" defer nonce="{{ csp_nonce }}"></script>
 </head>
-
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#home">Inicio</a></li>
-                <li><a href="/IAgotic">Habla con la IA</a></li>
-                <li><a href="#artists">Artistas</a></li>
-                <li><a href="#generate">Generar</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="home" class="hero">
-            <!-- Video de catedral gótica -->
-            <video autoplay muted loop class="hero-video">
-                <source src="{{ url_for('static', filename='videos/Calavera.mp4') }}" type="video/mp4">
-                Tu navegador no soporta la etiqueta de video.
+    <!-- HERO ESTILO SUNO -->
+    <section class="hero-wrap">
+        <div class="hero-bg"></div>
+        <div class="hero-video-wrap">
+            <video autoplay muted loop playsinline>
+                <source src="/static/videos/Calavera.mp4" type="video/mp4">
             </video>
-            <div class="hero-content">
-                <h1>Dark Music AI</h1>
-                <p>Genera beats y habla con el chat bot Carti para escuchar las mejores o remixes del momento inspirados en Playboi Carti y Ken Carson.</p>
+        </div>
+        <div class="hero-cards">
+            <div class="hero-card" data-src="/static/Music/Conde.mp3" data-title="Conde" data-artist="Opium">
+                <a href="#" class="hero-card-link">
+                    <div class="hero-card-img"><img src="/static/images/I AM MUSIC.jpg" alt="Opium"></div>
+                    <div class="hero-card-info"><strong>Opium Mix</strong><span>Lo mejor del momento</span></div>
+                </a>
             </div>
-        </section>
-        <section id="about" class="about">
-            <h2>Sobre nuestra IA</h2>
-            <p>Utilizamos algoritmos avanzados para crear beats únicos en el estilo de tus artistas favoritos.</p>
-            
-            <!-- Sección de hover con imagen y descripción -->
-            <div class="info-container">
-                <!-- Hover pequeño a la izquierda -->
-                <div class="hover-container">
-                    <div class="hover-info">
-                        <img src="{{ url_for('static', filename='images/I AM MUSIC.jpg') }}" alt="AI Music Generation" class="hover-image">
-                        <div class="hover-description">
-                            <p>¡Descubre cómo nuestra IA puede generar beats únicos al estilo de tus artistas favoritos!</p>
+            <div class="hero-card" data-src="/static/Music/bando.mp3" data-title="Bando" data-artist="Trap">
+                <a href="#" class="hero-card-link">
+                    <div class="hero-card-img"><img src="/static/images/KenCarson.jpg" alt=""></div>
+                    <div class="hero-card-info"><strong>Trap</strong><span>Beats</span></div>
+                </a>
+            </div>
+            <div class="hero-card" data-src="/static/Music/Magnolia.mp3" data-title="Magnolia" data-artist="Rage">
+                <a href="#" class="hero-card-link">
+                    <div class="hero-card-img"><img src="/static/images/Redcarti.jpg" alt=""></div>
+                    <div class="hero-card-info"><strong>Rage</strong><span>Beats</span></div>
+                </a>
+            </div>
+        </div>
+        <header class="hero-header">
+            <a href="/" class="logo">OPIUM</a>
+            <nav class="hero-nav">
+                <a href="#ai">IA</a>
+                <a href="/dj-console">Consola DJ</a>
+            </nav>
+        </header>
+        <div class="hero-center">
+            <div class="hero-title-wrap">
+                <h1 class="hero-title"><span id="heroTitleText"></span><span class="cursor" id="heroTitleCursor"></span></h1>
+                <p class="hero-subtitle">Empieza con una idea o usa la consola DJ. Tu próximo beat está a un paso.</p>
+            </div>
+            <div class="hero-bar-wrap">
+                <div class="hero-bar">
+                    <div class="hero-refs-wrap">
+                        <button type="button" class="hero-bar-add" id="heroRefsBtn" aria-label="Añadir pistas de referencia">+</button>
+                        <div class="hero-refs-popover" id="heroRefsPopover">
+                            <h4>Añadir pistas de referencia</h4>
+                            <p>Artistas, estilos o canciones que quieras usar como referencia para el beat.</p>
+                            <div class="hero-refs-input-wrap">
+                                <input type="text" id="heroRefInput" placeholder="Ej: trap, hip-hop, artista" autocomplete="off">
+                                <button type="button" id="heroRefAddBtn">Añadir</button>
+                            </div>
+                            <div class="hero-refs-list" id="heroRefsList"></div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Descripción de Playboi Carti a la derecha -->
-                <div class="carti-description">
-                    <h3>¿Por qué Playboi Carti es uno de los mejores raperos?</h3>
-                    <p>Playboi Carti es conocido por su estilo innovador y su habilidad para fusionar elementos del trap con un enfoque melódico único. Su música tiene una energía contagiosa y sus letras a menudo exploran temas de estilo de vida y moda, creando una conexión profunda con su audiencia. Además, su capacidad para experimentar con sonidos y colaborar con otros artistas ha establecido un nuevo estándar en el género.</p>
+                    <input type="text" class="hero-bar-input" id="heroPrompt" placeholder="Chatea para crear música..." autocomplete="off">
+                    <button type="button" class="hero-bar-advanced" id="heroAdvanced">Avanzado</button>
+                    <button type="button" class="hero-bar-create" id="heroCreate">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        Crear
+                    </button>
                 </div>
             </div>
-        </section>
-        <section id="artists" class="artists">
-            <h2>Artistas Inspiradores</h2>
-            <div class="artist-cards">
-                <div class="artist-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <img src="{{ url_for('static', filename='images/KenCarson.jpg') }}" alt="Ken Carson">
-                            <h3>Ken Carson</h3>
-                        </div>
-                        <div class="card-back">
-                            <video class="artist-video" loop muted>
-                                <source src="{{ url_for('static', filename='videos/ken_carson.mp4') }}" type="video/mp4">
-                            </video>
-                            <h3>Canciones Populares</h3>
-                            <ul class="song-list">
-                                <li>
-                                    <span>Yale</span>
-                                    <button class="play-btn" data-src="{{ url_for('static', filename='music/ken_carson_yale.mp3') }}">&#9658;</button>
-                                </li>
-                                <li>
-                                    <span>Rock N Roll</span>
-                                    <button class="play-btn" data-src="{{ url_for('static', filename='music/ken_carson_rock_n_roll.mp3') }}">&#9658;</button>
-                                </li>
-                                <li>
-                                    <span>Freestyle 2</span>
-                                    <button class="play-btn" data-src="{{ url_for('static', filename='music/ken_carson_freestyle_2.mp3') }}">&#9658;</button>
-                                </li>
-                            </ul>
-                        </div>
+            <div class="hero-chat-thread" id="heroChatThread"></div>
+        </div>
+        <!-- Barra de cantantes trap USA con animación -->
+        <div class="hero-artists-bar">
+            <div class="hero-artists-bar-bg"></div>
+            <div class="hero-artists-bar-inner">
+                <div class="hero-artists-bar-track">
+                    <div class="hero-artists-bar-set">
+                        <span class="hero-artist-name">Playboi Carti</span>
+                        <span class="hero-artist-name">Ken Carson</span>
+                        <span class="hero-artist-name">Travis Scott</span>
+                        <span class="hero-artist-name">Drake</span>
+                        <span class="hero-artist-name">Future</span>
+                        <span class="hero-artist-name">Young Thug</span>
+                        <span class="hero-artist-name">Lil Uzi Vert</span>
                     </div>
-                </div>
-                <div class="artist-card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <img src="{{ url_for('static', filename='images/Redcarti.jpg') }}" alt="Playboi Carti">
-                            <h3>Playboi Carti</h3>
-                        </div>
-                        <div class="card-back">
-                            <video class="artist-video" loop muted>
-                                <source src="{{ url_for('static', filename='videos/playboi_carti.mp4') }}" type="video/mp4">
-                            </video>
-                            <h3>Canciones Populares</h3>
-                            <ul class="song-list">
-                                <li>
-                                    <span>Magnolia</span>
-                                    <button class="play-btn" data-src="{{ url_for('static', filename='music/playboi_carti_magnolia.mp3') }}">&#9658;</button>
-                                </li>
-                                <li>
-                                    <span>Shoota</span>
-                                    <button class="play-btn" data-src="{{ url_for('static', filename='music/playboi_carti_shoota.mp3') }}">&#9658;</button>
-                                </li>
-                                <li>
-                                    <span>Sky</span>
-                                    <button class="play-btn" data-src="{{ url_for('static', filename='music/playboi_carti_sky.mp3') }}">&#9658;</button>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="hero-artists-bar-set" aria-hidden="true">
+                        <span class="hero-artist-name">Playboi Carti</span>
+                        <span class="hero-artist-name">Ken Carson</span>
+                        <span class="hero-artist-name">Travis Scott</span>
+                        <span class="hero-artist-name">Drake</span>
+                        <span class="hero-artist-name">Future</span>
+                        <span class="hero-artist-name">Young Thug</span>
+                        <span class="hero-artist-name">Lil Uzi Vert</span>
                     </div>
                 </div>
             </div>
-        </section>
-        
-        <style>
-        .artist-cards {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-        
-        .artist-card {
-            width: 300px;
-            height: 400px;
-            perspective: 1000px;
-            margin: 20px;
-        }
-        
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
-        
-        .artist-card:hover .card-inner {
-            transform: rotateY(180deg);
-        }
-        
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #222;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .card-back {
-            transform: rotateY(180deg);
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        
-        .artist-video {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-        
-        .song-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-        }
-        
-        .song-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .play-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        </style>
-        
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const artistCards = document.querySelectorAll('.artist-card');
-            const audioPlayer = document.getElementById('audio-player');
-        
-            artistCards.forEach(card => {
-                const video = card.querySelector('.artist-video');
-                const playButtons = card.querySelectorAll('.play-btn');
-        
-                card.addEventListener('mouseenter', () => {
-                    video.play();
-                });
-        
-                card.addEventListener('mouseleave', () => {
-                    video.pause();
-                    video.currentTime = 0;
-                });
-        
-                playButtons.forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const songSrc = button.getAttribute('data-src');
-                        audioPlayer.src = songSrc;
-                        audioPlayer.play();
-                    });
-                });
-            });
-        });
-        </script>
-<section id="generate" class="generate">
-    <h2>Genera tu Beat Personalizado</h2>
-    <form id="beat-form" method="POST" action="/generate-beat">
-        <div class="form-group">
-            <label for="style">Estilo:</label>
-            <select id="style" name="style" required>
-                <option value="carti">Playboi Carti</option>
-                <option value="carson">Ken Carson</option>
-                <option value="bleesd">Bleesd</option>
-                <option value="mix">Mezcla</option>
-            </select>
         </div>
-        <div class="form-group">
-            <label for="duration">Duración (segundos):</label>
-            <input type="range" id="duration" name="duration" min="30" max="180" value="60" step="10" required>
-            <output for="duration" id="duration-output">60 segundos</output>
-        </div>
-        <div class="form-group">
-            <label for="mood">Estado de ánimo:</label>
-            <select id="mood" name="mood" required>
-                <option value="energetic">Energético</option>
-                <option value="chill">Relajado</option>
-                <option value="dark">Oscuro</option>
-                <option value="euphoric">Eufórico</option>
-            </select>
-        </div>
-        
-        </div>
-        <div class="form-group">
-            <label for="bpm">BPM:</label>
-            <input type="number" id="bpm" name="bpm" min="60" max="200" value="140" required>
-        </div>
-        <button type="submit" class="generate-button">Generar Beat</button>
-    </form>
-
-    <div id="beat-preview" style="display: none;">
-        <h3>Vista previa del Beat</h3>
-        <div id="waveform"></div>
-        <button id="play-pause">Reproducir</button>
-        <button id="download" disabled>Descargar Beat</button>
-    </div>
-
-    <section id="beat-list">
-        <h3>Beats Generados</h3>
-        <ul id="beat-items"></ul>
+        <a href="#content" class="hero-scroll">Desplázate para explorar</a>
     </section>
-</section>
 
-<script src="https://unpkg.com/wavesurfer.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const beatForm = document.getElementById('beat-form');
-    const generateButton = document.querySelector('.generate-button');
-    const loadingIndicator = document.createElement('div');
-    const durationInput = document.getElementById('duration');
-    const durationOutput = document.getElementById('duration-output');
-
-    durationInput.addEventListener('input', function() {
-        durationOutput.textContent = `${durationInput.value} segundos`;
-    });
-    loadingIndicator.textContent = 'Generando beat...';
-    loadingIndicator.style.display = 'none';
-    beatForm.appendChild(loadingIndicator);
-
-    if (beatForm) {
-        beatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            generateButton.disabled = true;
-            loadingIndicator.style.display = 'block';
-
-            const formData = new FormData(beatForm);
-
-            fetch('/generate-beat', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw err; });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.filename) {
-                    const beatList = document.getElementById('beat-items');
-                    const beatItem = document.createElement('li');
-                    beatItem.innerHTML = `
-                        <a href="/static/beats/${data.filename}" target="_blank">${data.filename}</a>
-                        <button onclick="downloadBeat('${data.filename}')">Descargar</button>
-                    `;
-                    beatList.appendChild(beatItem);
-                    alert('Beat generado con éxito!');
-                }
-            })
-            .catch(error => {
-                console.error('Error detallado al generar el beat:', error);
-                alert('Hubo un error al generar el beat: ' + (error.error || 'Error desconocido'));
-            })
-            .finally(() => {
-                generateButton.disabled = false;
-                loadingIndicator.style.display = 'none';
-            });
-        });
-    }
-});
-
-function downloadBeat(filename) {
-    window.location.href = `/download-beat/${filename}`;
-}
-</script>
-
-
-
-    
-        
-    </main>
-    <footer>
-        <p>&copy; 2024 Dark Music AI. Todos los derechos reservados.</p>
-    </footer>
-    
-    <!-- Reproductor de música -->
-    <div class="music-player-container">
-        <div class="music-player">
-            <div class="music-icon">
-                <img src="{{ url_for('static', filename='images/Music.jpg') }}" alt="Music Icon">
-            </div>
-            <audio id="audio-player" controls>
-                <source src="{{ url_for('static', filename='Music/Conde.mp3') }}" type="audio/mpeg">
-                Tu navegador no soporta el elemento de audio.
-            </audio>
+    <div class="app main-wrap">
+        <div class="section-bg">
+            <video autoplay muted loop playsinline>
+                <source src="/static/videos/Calavera.mp4" type="video/mp4">
+            </video>
         </div>
+        <header class="app-header">
+            <a href="/" class="logo">OPIUM</a>
+        </header>
+
+        <main class="main" id="content">
+            <section class="about-section">
+                <h2>Sobre el proyecto</h2>
+                <p>Todo en una sola experiencia: crea música, escucha, usa la consola DJ, quita vocales y más.</p>
+                <div class="about-cards">
+                    <a href="#content" class="about-card">
+                        <div class="about-card-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        </div>
+                        <span class="about-card-label">Crear</span>
+                        <span class="about-card-desc">Chatea y crea</span>
+                    </a>
+                    <a href="#suno" class="about-card">
+                        <div class="about-card-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <span class="about-card-label">Escuchar</span>
+                        <span class="about-card-desc">Lo que suena</span>
+                    </a>
+                    <a href="/dj-console" class="about-card">
+                        <div class="about-card-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h3v-4H3zm6 0v4h3v-4H9zm6 0v4h3v-4h-3zm6 0v4h3v-4h-3zM3 16h3v4H3v-4zm6 0h3v4H9v-4zm6 0h3v4h-3v-4zm6 0h3v4h-3v-4zM3 4h3v4H3V4zm6 0h3v4H9V4zm6 0h3v4h-3V4zm6 0h3v4h-3V4z"/></svg>
+                        </div>
+                        <span class="about-card-label">Consola DJ</span>
+                        <span class="about-card-desc">Platos y secuenciador</span>
+                    </a>
+                    <a href="#upload" class="about-card">
+                        <div class="about-card-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        </div>
+                        <span class="about-card-label">Quitar vocales</span>
+                        <span class="about-card-desc">Instrumental</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="ai-section" id="ai">
+                <div class="ai-section-content">
+                    <h2>Bienvenidos a la revolución musical de la IA</h2>
+                    <p>Explora el generador de música con IA en rápida evolución que hace que crear y personalizar música de alta calidad sea más fácil que nunca. Inspírate y crea tus propias canciones.</p>
+                    <a href="#" class="ai-cta" id="aiCta">Crear con IA</a>
+                </div>
+                <div class="ai-section-visual" aria-hidden="true">
+                    <svg viewBox="0 0 120 260" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="aiFlameGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+                                <stop offset="0%" stop-color="rgba(100,80,220,0.4)"/>
+                                <stop offset="25%" stop-color="rgba(0,180,255,0.7)"/>
+                                <stop offset="55%" stop-color="rgba(0,255,220,0.9)"/>
+                                <stop offset="80%" stop-color="rgba(0,255,180,0.6)"/>
+                                <stop offset="100%" stop-color="rgba(0,200,255,0.2)"/>
+                            </linearGradient>
+                            <linearGradient id="aiFlameGrad2" x1="50%" y1="100%" x2="50%" y2="0%">
+                                <stop offset="0%" stop-color="rgba(120,60,200,0.3)"/>
+                                <stop offset="40%" stop-color="rgba(0,220,255,0.5)"/>
+                                <stop offset="100%" stop-color="rgba(0,255,200,0.15)"/>
+                            </linearGradient>
+                            <linearGradient id="aiFlameStroke" x1="50%" y1="100%" x2="50%" y2="0%">
+                                <stop offset="0%" stop-color="rgba(140,80,255,0.5)"/>
+                                <stop offset="50%" stop-color="rgba(0,240,255,0.8)"/>
+                                <stop offset="100%" stop-color="rgba(0,255,220,0.4)"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Forma principal tipo llama/onda -->
+                        <path class="ai-flame-path" d="M60 255 C 32 205, 20 150, 38 95 C 50 60, 72 28, 60 5 L60 255 Z"/>
+                        <path class="ai-flame-path" d="M60 255 C 88 205, 100 150, 82 95 C 70 60, 48 28, 60 5 Z"/>
+                        <path class="ai-flame-path-2" d="M60 248 C 45 200, 42 145, 54 98 C 61 65, 64 38, 60 18 L60 248 Z"/>
+                        <path class="ai-flame-path-2" d="M60 248 C 75 200, 78 145, 66 98 C 59 65, 56 38, 60 18 Z"/>
+                        <!-- Líneas finas tipo neón / visualización -->
+                        <path class="ai-flame-path-3" d="M60 250 Q 38 195 48 140 Q 55 90 60 50 Q 58 18 60 8"/>
+                        <path class="ai-flame-path-3" d="M60 250 Q 82 195 72 140 Q 65 90 60 50 Q 62 18 60 8"/>
+                        <path class="ai-flame-path-3" d="M60 235 Q 42 175 52 115 Q 59 65 60 25"/>
+                        <path class="ai-flame-path-3" d="M60 235 Q 78 175 68 115 Q 61 65 60 25"/>
+                        <path class="ai-flame-path-3" d="M60 220 Q 48 165 58 105 Q 62 60 60 35"/>
+                        <path class="ai-flame-path-3" d="M60 220 Q 72 165 62 105 Q 58 60 60 35"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section class="main-showcase">
+                <div class="main-showcase-inner">
+                    <p class="main-showcase-line">Un solo lugar para crear, escuchar y mezclar.</p>
+                    <div class="main-showcase-visual" aria-hidden="true">
+                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features-section">
+                <div class="features-grid">
+                    <article class="feature-apartado">
+                        <h3>Crea música</h3>
+                        <p>Chatea para crear, usa el secuenciador con kick, snare, hi-hat y clap, o sube pistas y quita vocales. Todo en un solo lugar.</p>
+                        <div class="feature-visual">
+                            <div class="feature-waveform" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="feature-apartado">
+                        <h3>Crea cada día. Guárdalo todo.</h3>
+                        <p>Genera beats por estilo y mood, descarga WAV y llévatelos. Sin límites de género: trap, rage, chill o eufórico. Tu biblioteca siempre a mano.</p>
+                        <div class="feature-visual">
+                            <div class="feature-cards-wrap">
+                                <div class="feature-card-stack"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
+                                <div class="feature-card-stack"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                                <div class="feature-card-stack"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="feature-apartado">
+                        <h3>Instrumentales y stems</h3>
+                        <p>Extrae la pista instrumental de cualquier canción estéreo y descarga el WAV. Ideal para mezclar en tu DAW o usarlo como base.</p>
+                        <div class="feature-visual">
+                            <div class="feature-stems">
+                                <div class="feature-stem" title="Vocales"></div>
+                                <div class="feature-stem" title="Bajo"></div>
+                                <div class="feature-stem" title="Drums"></div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Apartado horizontal -->
+            <section class="suno-section" id="suno">
+                <h2 class="section-title">Lo que suena</h2>
+                <div class="suno-scroll">
+                    <div class="suno-card" data-src="/static/Music/bando.mp3" data-title="Bando" data-artist="Trap">
+                        <div class="suno-card-cover">
+                            <img src="/static/images/KenCarson.jpg" alt="">
+                            <div class="suno-card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                            <div class="suno-card-stats">
+                                <span>► 128K</span>
+                                <span>👍 4.2K</span>
+                            </div>
+                        </div>
+                        <div class="suno-card-title">Bando</div>
+                        <div class="suno-card-artist">Trap</div>
+                    </div>
+                    <div class="suno-card" data-src="/static/Music/Magnolia.mp3" data-title="Magnolia" data-artist="Rage">
+                        <div class="suno-card-cover">
+                            <img src="/static/images/Redcarti.jpg" alt="">
+                            <div class="suno-card-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                            <div class="suno-card-stats">
+                                <span>► 256K</span>
+                                <span>👍 12K</span>
+                            </div>
+                        </div>
+                        <div class="suno-card-title">Magnolia</div>
+                        <div class="suno-card-artist">Rage</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="single-column-block">
+            <section class="upload-vocals-section" id="upload">
+                <h2 class="section-title">Subir canción para quitar vocales</h2>
+                <p style="color: var(--text-dim); margin-bottom: 1rem; font-size: 0.95rem;">Sube un archivo de audio estéreo (MP3, WAV, etc.) y descarga la versión instrumental.</p>
+                <div class="upload-vocals-box">
+                    <input type="file" id="uploadSongInput" accept="audio/*" class="upload-vocals-input" hidden>
+                    <label for="uploadSongInput" class="upload-vocals-label">
+                        <span class="upload-vocals-icon">↑</span>
+                        <span id="uploadSongName">Elige un archivo o arrástralo aquí</span>
+                    </label>
+                    <button type="button" class="upload-vocals-btn" id="uploadVocalsBtn" disabled>Quitar vocales a la canción subida</button>
+                </div>
+            </section>
+
+            <section class="dj-section" id="generate">
+                <h2 class="section-title">Consola DJ</h2>
+                <p style="margin-bottom: 0.75rem; color: var(--text-dim);">
+                    <a href="/dj-console" style="color: var(--gold); font-weight: 500;">Abrir consola DJ completa</a> — Dos platos, crossfader, EQ, grabación de sesión y biblioteca.
+                </p>
+                <div class="dj-console">
+                    <div class="dj-header">
+                        <div class="dj-header-row">
+                        <div class="bpm-control">
+                            <label>BPM</label>
+                            <input type="range" id="bpm" min="70" max="160" value="120">
+                            <span class="bpm-value" id="bpmVal">120</span>
+                        </div>
+                        <div class="dj-options">
+                            <div class="opt-row">
+                                <label>Duración</label>
+                                <select id="durationBars">
+                                    <option value="4">4 compases</option>
+                                    <option value="8">8 compases</option>
+                                    <option value="16" selected>16 compases</option>
+                                    <option value="32">32 compases</option>
+                                </select>
+                            </div>
+                            <div class="opt-row">
+                                <label>Mood</label>
+                                <select id="moodOpt">
+                                    <option value="energetic">Energético</option>
+                                    <option value="chill">Chill</option>
+                                    <option value="dark">Oscuro</option>
+                                    <option value="euphoric">Eufórico</option>
+                                </select>
+                            </div>
+                            <div class="opt-row">
+                                <label>Estilo</label>
+                                <select id="styleOpt">
+                                    <option value="trap">Trap</option>
+                                    <option value="rage">Rage</option>
+                                    <option value="bleesd">Bleesd</option>
+                                    <option value="mix">Mezcla</option>
+                                </select>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="dj-buttons">
+                            <button class="dj-btn dj-btn-play" id="playBtn">▶ Play</button>
+                            <button class="dj-btn dj-btn-stop" id="stopBtn">■ Stop</button>
+                            <button class="dj-btn dj-btn-record" id="recordBtn">⏺ Descargar beat</button>
+                            <button class="dj-btn dj-btn-gen" id="genBeatBtn">✨ Generar</button>
+                        </div>
+                    </div>
+                    <div class="sequencer">
+                        <div class="seq-row">
+                            <span class="seq-label">KICK</span>
+                            <div class="seq-steps" data-drum="kick"></div>
+                        </div>
+                        <div class="seq-row">
+                            <span class="seq-label">SNARE</span>
+                            <div class="seq-steps" data-drum="snare"></div>
+                        </div>
+                        <div class="seq-row">
+                            <span class="seq-label">HI-HAT</span>
+                            <div class="seq-steps" data-drum="hihat"></div>
+                        </div>
+                        <div class="seq-row">
+                            <span class="seq-label">CLAP</span>
+                            <div class="seq-steps" data-drum="clap"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </div>
+
+            <footer class="app-footer">
+                <div class="app-footer-inner">
+                    <a href="/" class="app-footer-logo">OPIUM</a>
+                    <nav class="app-footer-nav" aria-label="Pie de página">
+                        <a href="#content">Inicio</a>
+                        <a href="#ai">IA</a>
+                        <a href="/dj-console">Consola DJ</a>
+                        <a href="#suno">Lo que suena</a>
+                        <a href="#upload">Quitar vocales</a>
+                    </nav>
+                    <p class="app-footer-credits">Creado por <strong>Steven Villamizar Mendoza</strong></p>
+                </div>
+            </footer>
+        </main>
+
     </div>
 
+    <a href="#content" class="back-to-top" id="backToTop" aria-label="Volver arriba">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    </a>
 
+    <div class="mini-player hidden" id="miniPlayer">
+        <div class="now-playing">
+            <img id="miniArtwork" src="" alt="">
+            <div class="now-playing-info">
+                <strong id="miniTitle">—</strong>
+                <span id="miniArtist">—</span>
+            </div>
+        </div>
+        <div class="playback-center">
+            <div class="playback-controls">
+                <button type="button" id="miniPrev" aria-label="Anterior" title="Anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+                <button type="button" class="play-pause-btn" id="miniPlayPause" aria-label="Reproducir" title="Reproducir"><svg id="miniPlayIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><svg id="miniPauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                <button type="button" id="miniNext" aria-label="Siguiente" title="Siguiente"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+            </div>
+            <div class="progress-row">
+                <span id="miniTimeCurrent">0:00</span>
+                <input type="range" id="miniProgress" min="0" max="100" value="0" title="Barra de progreso">
+                <span id="miniTimeTotal">0:00</span>
+            </div>
+        </div>
+        <div class="player-actions">
+            <div class="volume-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                <input type="range" id="miniVolume" min="0" max="100" value="100" title="Volumen">
+            </div>
+            <button type="button" class="mini-player-close" id="miniPlayerClose" aria-label="Cerrar reproductor">×</button>
+        </div>
+        <audio id="audioPlayer" preload="metadata"></audio>
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const chatbotButton = document.querySelector('.chatbot-button');
-        const chatWindow = document.createElement('div');
-        chatWindow.className = 'chat-window';
-        chatWindow.style.display = 'none';
-        
-        chatWindow.innerHTML = `
-            <div class="chat-header">
-                <h3>Chat con Playboi Carti</h3>
-                <button class="chat-close">&times;</button>
-            </div>
-            <div class="chat-messages"></div>
-            <div class="chat-input">
-                <input type="text" placeholder="Escribe un mensaje...">
-                <button>Enviar</button>
-            </div>
-        `;
-        
-        document.body.appendChild(chatWindow);
-        
-        chatbotButton.addEventListener('click', function() {
-            chatWindow.style.display = 'flex';
+    <script nonce="{{ csp_nonce }}">
+        // —— Efecto de escritura en el título del hero ——
+        (function() {
+            const fullText = 'Crea un beat sobre lo que quieras';
+            const el = document.getElementById('heroTitleText');
+            const cursor = document.getElementById('heroTitleCursor');
+            if (!el) return;
+            let i = 0;
+            function type() {
+                if (i < fullText.length) {
+                    el.textContent += fullText[i];
+                    i++;
+                    setTimeout(type, 80);
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => setTimeout(type, 400));
+            } else {
+                setTimeout(type, 400);
+            }
+        })();
+
+        // —— Sequencer & Web Audio DJ ——
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const masterGain = ctx.createGain();
+        masterGain.gain.value = 0.4;
+        masterGain.connect(ctx.destination);
+
+        const steps = 16;
+        const patterns = { kick: [], snare: [], hihat: [], clap: [] };
+        let bpm = 120;
+        let isPlaying = false;
+        let currentStep = 0;
+        let seqInterval = null;
+
+        function createSteps() {
+            ['kick','snare','hihat','clap'].forEach(drum => {
+                const row = document.querySelector(`[data-drum="${drum}"]`);
+                for (let i = 0; i < steps; i++) {
+                    const s = document.createElement('button');
+                    s.className = 'seq-step';
+                    s.dataset.step = i;
+                    s.dataset.drum = drum;
+                    s.addEventListener('click', () => toggleStep(drum, i));
+                    row.appendChild(s);
+                    if (!patterns[drum][i]) patterns[drum][i] = false;
+                }
+            });
+        }
+
+        function toggleStep(drum, i) {
+            patterns[drum][i] = !patterns[drum][i];
+            const el = document.querySelector(`[data-drum="${drum}"][data-step="${i}"]`);
+            el.classList.toggle('active', patterns[drum][i]);
+        }
+
+        function playKick() {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.8, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.15);
+        }
+
+        function playSnare() {
+            const noise = ctx.createBufferSource();
+            const buf = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.05));
+            noise.buffer = buf;
+            const filt = ctx.createBiquadFilter();
+            filt.type = 'highpass';
+            filt.frequency.value = 1000;
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.5, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+            noise.connect(filt);
+            filt.connect(gain);
+            gain.connect(masterGain);
+            noise.start(ctx.currentTime);
+            noise.stop(ctx.currentTime + 0.2);
+            const osc = ctx.createOscillator();
+            const g2 = ctx.createGain();
+            osc.frequency.value = 200;
+            g2.gain.setValueAtTime(0.3, ctx.currentTime);
+            g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+            osc.connect(g2);
+            g2.connect(masterGain);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.05);
+        }
+
+        function playHihat() {
+            const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+            const src = ctx.createBufferSource();
+            src.buffer = buf;
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.03);
+            src.connect(gain);
+            gain.connect(masterGain);
+            src.start(ctx.currentTime);
+        }
+
+        function playClap() {
+            for (let t = 0; t < 2; t++) {
+                const buf = ctx.createBuffer(1, ctx.sampleRate * 0.08, ctx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.02));
+                const src = ctx.createBufferSource();
+                src.buffer = buf;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.4, ctx.currentTime + t * 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + t * 0.03 + 0.06);
+                src.connect(gain);
+                gain.connect(masterGain);
+                src.start(ctx.currentTime + t * 0.03);
+            }
+        }
+
+        function tick() {
+            document.querySelectorAll('.seq-step.current').forEach(e => e.classList.remove('current'));
+            ['kick','snare','hihat','clap'].forEach(drum => {
+                if (patterns[drum][currentStep]) {
+                    if (drum === 'kick') playKick();
+                    if (drum === 'snare') playSnare();
+                    if (drum === 'hihat') playHihat();
+                    if (drum === 'clap') playClap();
+                }
+                const el = document.querySelector(`[data-drum="${drum}"][data-step="${currentStep}"]`);
+                if (el) el.classList.add('current');
+            });
+            currentStep = (currentStep + 1) % steps;
+        }
+
+        function startSeq() {
+            if (isPlaying) return;
+            ctx.resume();
+            isPlaying = true;
+            const interval = 60000 / bpm / 4;
+            seqInterval = setInterval(tick, interval);
+        }
+
+        function stopSeq() {
+            isPlaying = false;
+            if (seqInterval) clearInterval(seqInterval);
+            currentStep = 0;
+            document.querySelectorAll('.seq-step.current').forEach(e => e.classList.remove('current'));
+        }
+
+        document.getElementById('bpm').oninput = function() {
+            bpm = +this.value;
+            document.getElementById('bpmVal').textContent = bpm;
+            if (isPlaying) {
+                stopSeq();
+                startSeq();
+            }
+        };
+
+        document.getElementById('playBtn').onclick = startSeq;
+        document.getElementById('stopBtn').onclick = stopSeq;
+
+        function renderBeatToWav(numBars, sampleRate) {
+            const offline = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, sampleRate * (numBars * 4 * 60 / bpm), sampleRate);
+            const gain = offline.createGain();
+            gain.gain.value = 0.6;
+            gain.connect(offline.destination);
+            const stepLen = 60 / bpm / 4;
+            for (let bar = 0; bar < numBars; bar++) {
+                for (let s = 0; s < steps; s++) {
+                    const t = (bar * steps + s) * stepLen;
+                    ['kick','snare','hihat','clap'].forEach(drum => {
+                        if (!patterns[drum][s]) return;
+                        const osc = offline.createOscillator();
+                        const g = offline.createGain();
+                        osc.connect(g);
+                        g.connect(gain);
+                        if (drum === 'kick') {
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(150, t);
+                            osc.frequency.exponentialRampToValueAtTime(40, t + 0.1);
+                            g.gain.setValueAtTime(0.8, t);
+                            g.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+                            osc.start(t);
+                            osc.stop(t + 0.15);
+                        } else if (drum === 'snare') {
+                            const buf = offline.createBuffer(1, offline.sampleRate * 0.2, offline.sampleRate);
+                            const d = buf.getChannelData(0);
+                            for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(offline.sampleRate*0.05));
+                            const ns = offline.createBufferSource();
+                            ns.buffer = buf;
+                            const bp = offline.createBiquadFilter();
+                            bp.type = 'highpass';
+                            bp.frequency.value = 1000;
+                            const g2 = offline.createGain();
+                            g2.gain.setValueAtTime(0.5, t);
+                            g2.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+                            ns.connect(bp);
+                            bp.connect(g2);
+                            g2.connect(gain);
+                            ns.start(t);
+                            const o2 = offline.createOscillator();
+                            const g3 = offline.createGain();
+                            o2.frequency.value = 200;
+                            g3.gain.setValueAtTime(0.3, t);
+                            g3.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
+                            o2.connect(g3);
+                            g3.connect(gain);
+                            o2.start(t);
+                            o2.stop(t + 0.05);
+                        } else if (drum === 'hihat') {
+                            const buf = offline.createBuffer(1, offline.sampleRate * 0.05, offline.sampleRate);
+                            const d = buf.getChannelData(0);
+                            for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+                            const src = offline.createBufferSource();
+                            src.buffer = buf;
+                            const g2 = offline.createGain();
+                            g2.gain.setValueAtTime(0.2, t);
+                            g2.gain.exponentialRampToValueAtTime(0.01, t + 0.03);
+                            src.connect(g2);
+                            g2.connect(gain);
+                            src.start(t);
+                        } else if (drum === 'clap') {
+                            for (let c = 0; c < 2; c++) {
+                                const buf = offline.createBuffer(1, offline.sampleRate * 0.08, offline.sampleRate);
+                                const d = buf.getChannelData(0);
+                                for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(offline.sampleRate*0.02));
+                                const src = offline.createBufferSource();
+                                src.buffer = buf;
+                                const g2 = offline.createGain();
+                                g2.gain.setValueAtTime(0.5, t + c*0.03);
+                                g2.gain.exponentialRampToValueAtTime(0.01, t + c*0.03 + 0.06);
+                                src.connect(g2);
+                                g2.connect(gain);
+                                src.start(t + c*0.03);
+                            }
+                        }
+                    });
+                }
+            }
+            return offline.startRendering();
+        }
+
+        function wavFromBuffer(buffer) {
+            const numCh = buffer.numberOfChannels;
+            const sr = buffer.sampleRate;
+            const dataBytes = buffer.length * numCh * 2;
+            const len = 44 + dataBytes;
+            const arr = new ArrayBuffer(len);
+            const view = new DataView(arr);
+            const writeU32 = (pos, val) => view.setUint32(pos, val, true);
+            const writeU16 = (pos, val) => view.setUint16(pos, val, true);
+            const writeStr = (pos, str) => { for (let i = 0; i < str.length; i++) view.setUint8(pos + i, str.charCodeAt(i)); };
+            writeStr(0, 'RIFF');
+            writeU32(4, len - 8);
+            writeStr(8, 'WAVE');
+            writeStr(12, 'fmt ');
+            writeU32(16, 16);
+            writeU16(20, 1);
+            writeU16(22, numCh);
+            writeU32(24, sr);
+            writeU32(28, sr * numCh * 2);
+            writeU16(32, numCh * 2);
+            writeU16(34, 16);
+            writeStr(36, 'data');
+            writeU32(40, dataBytes);
+            const ch0 = buffer.getChannelData(0);
+            for (let i = 0; i < buffer.length; i++) {
+                const v = Math.max(-1, Math.min(1, ch0[i]));
+                const sample = v < 0 ? Math.max(-32768, Math.floor(v * 0x8000)) : Math.min(32767, Math.floor(v * 0x7FFF));
+                view.setInt16(44 + i * 2, sample, true);
+            }
+            return new Blob([arr], { type: 'audio/wav' });
+        }
+
+        // Patrones profesionales (mismo motor que la Consola DJ: kick, snare, hihat, clap)
+        function getBpmForMood(mood) {
+            if (mood === 'chill') return 92;
+            if (mood === 'dark') return 98;
+            if (mood === 'euphoric') return 138;
+            return 128;
+        }
+
+        function getProPattern(style, mood) {
+            const kick = [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0];
+            const snare = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];
+            let hihat, clap = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];
+            if (mood === 'chill') {
+                hihat = [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0];
+            } else if (mood === 'dark') {
+                hihat = [1,0,0,0, 1,0,1,0, 1,0,0,0, 1,0,1,0];
+            } else if (mood === 'euphoric') {
+                hihat = [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1];
+            } else {
+                hihat = [1,0,1,1, 0,1,1,0, 1,0,1,1, 0,1,1,0];
+            }
+            if (style === 'trap' || style === 'rage') {
+                hihat = [1,1,1,0, 1,1,1,0, 1,1,1,0, 1,1,1,0];
+            }
+            if (style === 'electronic') {
+                hihat = [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1];
+                clap = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];
+            }
+            return {
+                kick: kick.map(Boolean),
+                snare: snare.map(Boolean),
+                hihat: hihat.map(Boolean),
+                clap: clap.map(Boolean)
+            };
+        }
+
+        function applyPattern(patt) {
+            ['kick','snare','hihat','clap'].forEach(drum => {
+                for (let i = 0; i < steps; i++) {
+                    patterns[drum][i] = patt[drum][i];
+                    const el = document.querySelector(`[data-drum="${drum}"][data-step="${i}"]`);
+                    if (el) el.classList.toggle('active', patt[drum][i]);
+                }
+            });
+        }
+
+        async function generateBeatInBrowser(style, mood, durationSec) {
+            if (ctx.state === 'suspended') await ctx.resume();
+            const savedBpm = bpm;
+            const savedPattern = {
+                kick: [...patterns.kick],
+                snare: [...patterns.snare],
+                hihat: [...patterns.hihat],
+                clap: [...patterns.clap]
+            };
+            const useBpm = getBpmForMood(mood);
+            bpm = useBpm;
+            const patt = getProPattern(style, mood);
+            applyPattern(patt);
+            const numBars = Math.max(4, Math.min(32, Math.ceil((durationSec * bpm) / 240)));
+            const buffer = await renderBeatToWav(numBars, 44100);
+            if (!buffer || buffer.length === 0) throw new Error('El audio generado está vacío');
+            bpm = savedBpm;
+            applyPattern(savedPattern);
+            const bpmEl = document.getElementById('bpm');
+            if (bpmEl) bpmEl.value = bpm;
+            if (document.getElementById('bpmVal')) document.getElementById('bpmVal').textContent = bpm;
+            return wavFromBuffer(buffer);
+        }
+
+        document.getElementById('recordBtn').onclick = async () => {
+            const bars = +document.getElementById('durationBars').value;
+            document.getElementById('recordBtn').disabled = true;
+            document.getElementById('recordBtn').textContent = 'Generando...';
+            try {
+                const buf = await renderBeatToWav(bars, 44100);
+                const blob = wavFromBuffer(buf);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `opium-beat-${bpm}bpm.wav`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                OpiumToast.error(e.message || 'No se pudo generar el beat.', { title: 'Error al generar' });
+            } finally {
+                document.getElementById('recordBtn').disabled = false;
+                document.getElementById('recordBtn').textContent = '⏺ Descargar beat';
+            }
+        };
+
+        document.getElementById('genBeatBtn').onclick = async () => {
+            const mood = document.getElementById('moodOpt').value;
+            const style = document.getElementById('styleOpt').value;
+            const bars = +document.getElementById('durationBars').value;
+            const durationSec = Math.round(bars * 4 * 60 / bpm);
+            const btn = document.getElementById('genBeatBtn');
+            btn.disabled = true;
+            btn.textContent = 'Generando...';
+            try {
+                const fd = new FormData();
+                fd.append('style', style);
+                fd.append('duration', Math.min(180, Math.max(30, durationSec)));
+                fd.append('mood', mood);
+                const r = await fetch('/generate-beat', { method: 'POST', body: fd });
+                const ct = r.headers.get('content-type') || '';
+                if (ct.includes('audio/')) {
+                    const blob = await r.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `opium-beat.wav`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } else if (r.ok) {
+                    const data = await r.json();
+                    if (data.filename) window.location.href = '/download-beat/' + data.filename;
+                } else {
+                    const err = await r.json().catch(() => ({}));
+                    throw new Error(err.error || 'Error');
+                }
+            } catch (e) {
+                OpiumToast.error(e.message || 'Error al generar el beat.', { title: 'Fallo de generación' });
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '✨ Generar con IA';
+            }
+        };
+
+        createSteps();
+
+        // —— Hero: scroll reveal ——
+        const revealSections = () => {
+            const sections = document.querySelectorAll('.about-section, .ai-section, .main-showcase, .features-section .feature-apartado, .suno-section, .upload-vocals-section, .dj-section, .app-footer');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+            sections.forEach(s => observer.observe(s));
+        };
+        revealSections();
+
+        // —— Volver arriba: mostrar al hacer scroll
+        const backToTop = document.getElementById('backToTop');
+        if (backToTop) {
+            window.addEventListener('scroll', () => {
+                backToTop.classList.toggle('visible', window.scrollY > 400);
+            });
+        }
+
+        // —— Apartado AI: CTA lleva al hero para crear
+        const aiCta = document.getElementById('aiCta');
+        if (aiCta) {
+            aiCta.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelector('.hero-wrap')?.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        // —— Hero: chatbot en la barra (Gemini)
+        const heroPrompt = document.getElementById('heroPrompt');
+        const heroCreate = document.getElementById('heroCreate');
+        const heroChatThread = document.getElementById('heroChatThread');
+
+        function addHeroMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = 'hero-chat-msg ' + role;
+            div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            heroChatThread.appendChild(div);
+            heroChatThread.scrollTop = heroChatThread.scrollHeight;
+        }
+
+        function showHeroLoading() {
+            const div = document.createElement('div');
+            div.className = 'hero-chat-loading';
+            div.id = 'heroChatLoading';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            heroChatThread.appendChild(div);
+            heroChatThread.scrollTop = heroChatThread.scrollHeight;
+        }
+        function hideHeroLoading() {
+            const el = document.getElementById('heroChatLoading');
+            if (el) el.remove();
+        }
+
+        function addHeroAudio(url) {
+            const wrap = document.createElement('div');
+            wrap.className = 'hero-chat-msg bot';
+            const beatCard = document.createElement('div');
+            beatCard.className = 'hero-chat-beat';
+            beatCard.innerHTML = '<div class="hero-chat-beat-title"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>Tu beat</div>';
+            const audioEl = document.createElement('audio');
+            audioEl.controls = true;
+            audioEl.preload = 'auto';
+            audioEl.setAttribute('controlsList', 'nodownload');
+            beatCard.appendChild(audioEl);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = 'opium-beat.wav';
+            downloadLink.className = 'hero-chat-beat-download';
+            downloadLink.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Descargar beat';
+            beatCard.appendChild(downloadLink);
+            wrap.appendChild(beatCard);
+            heroChatThread.appendChild(wrap);
+            heroChatThread.scrollTop = heroChatThread.scrollHeight;
+            audioEl.src = url;
+            audioEl.load();
+        }
+
+        async function sendHeroChat() {
+            const text = (heroPrompt.value || '').trim();
+            if (!text) return;
+
+            const messageToSend = heroRefs.length > 0
+                ? ('Referencias: ' + heroRefs.join(', ') + '. ' + text)
+                : text;
+            heroPrompt.value = '';
+            addHeroMsg('user', text);
+            showHeroLoading();
+            heroCreate.classList.add('loading');
+            heroCreate.disabled = true;
+
+            try {
+                const fd = new FormData();
+                fd.append('user_input', messageToSend);
+                const r = await fetch('/chat', { method: 'POST', body: fd });
+                const data = await r.json().catch(() => ({}));
+                hideHeroLoading();
+                if (!r.ok) {
+                    addHeroMsg('bot', data.error || 'Error. Comprueba que GEMINI_API_KEY esté en .env');
+                    heroCreate.classList.remove('loading');
+                    heroCreate.disabled = false;
+                    return;
+                }
+                if (data.response) addHeroMsg('bot', data.response);
+
+                if (data.trigger_beat) {
+                    showHeroLoading();
+                    const style = data.trigger_beat.style || 'mix';
+                    const mood = data.trigger_beat.mood || 'energetic';
+                    const durationSec = Math.min(90, Math.max(15, data.trigger_beat.duration || 60));
+                    let blob = null;
+                    try {
+                        if (ctx.state === 'suspended') await ctx.resume();
+                        blob = await generateBeatInBrowser(style, mood, durationSec);
+                    } catch (e) {
+                        try {
+                            const beatFd = new FormData();
+                            beatFd.append('style', style);
+                            beatFd.append('mood', mood);
+                            beatFd.append('duration', String(durationSec));
+                            const beatRes = await fetch('/generate-beat', { method: 'POST', body: beatFd });
+                            const ct = beatRes.headers.get('content-type') || '';
+                            if (ct.includes('audio/')) {
+                                blob = await beatRes.blob();
+                            } else if (beatRes.ok) {
+                                const j = await beatRes.json().catch(() => ({}));
+                                if (j.filename) {
+                                    const down = await fetch('/download-beat/' + j.filename);
+                                    if (down.ok) blob = await down.blob();
+                                }
+                            }
+                        } catch (_) {}
+                    }
+                    hideHeroLoading();
+                    if (blob && blob.size > 0) {
+                        const url = URL.createObjectURL(blob);
+                        addHeroMsg('bot', 'Listo. Reproducelo y descárgalo aquí.');
+                        addHeroAudio(url);
+                    } else {
+                        addHeroMsg('bot', 'No pude generar el audio. Prueba en la Consola DJ (más abajo) o recarga la página.');
+                    }
+                }
+            } catch (err) {
+                hideHeroLoading();
+                addHeroMsg('bot', 'Error de conexión. Intenta de nuevo.');
+            }
+            heroCreate.classList.remove('loading');
+            heroCreate.disabled = false;
+        }
+
+        let heroRefs = [];
+        function renderHeroRefs() {
+            const list = document.getElementById('heroRefsList');
+            function esc(s) { const d = document.createElement('span'); d.textContent = s; return d.innerHTML; }
+            list.innerHTML = heroRefs.map((ref, i) =>
+                `<span class="hero-ref-tag">${esc(ref)}<button type="button" data-ref-index="${i}" aria-label="Quitar">×</button></span>`
+            ).join('');
+            list.querySelectorAll('button[data-ref-index]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    heroRefs.splice(+btn.dataset.refIndex, 1);
+                    renderHeroRefs();
+                });
+            });
+        }
+        function addHeroRef() {
+            const input = document.getElementById('heroRefInput');
+            const val = (input.value || '').trim();
+            if (val && !heroRefs.includes(val)) {
+                heroRefs.push(val);
+                input.value = '';
+                renderHeroRefs();
+            }
+        }
+        const heroRefsBtn = document.getElementById('heroRefsBtn');
+        const heroRefsPopover = document.getElementById('heroRefsPopover');
+        heroRefsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            heroRefsPopover.classList.toggle('open');
+            heroRefsBtn.classList.toggle('open', heroRefsPopover.classList.contains('open'));
+        });
+        document.getElementById('heroRefAddBtn').addEventListener('click', addHeroRef);
+        document.getElementById('heroRefInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); addHeroRef(); }
+        });
+        document.addEventListener('click', (e) => {
+            if (heroRefsPopover.classList.contains('open') && !heroRefsPopover.contains(e.target) && !heroRefsBtn.contains(e.target)) {
+                heroRefsPopover.classList.remove('open');
+                heroRefsBtn.classList.remove('open');
+            }
         });
 
-        const closeButton = chatWindow.querySelector('.chat-close');
-        closeButton.addEventListener('click', function() {
-            chatWindow.style.display = 'none';
+        heroCreate.addEventListener('click', sendHeroChat);
+        heroPrompt.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); sendHeroChat(); }
         });
-    });
-</script>
+
+        document.getElementById('heroAdvanced').addEventListener('click', () => {
+            document.getElementById('generate').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Default pattern
+        [0,4,8,12].forEach(i => { patterns.kick[i]=true; document.querySelector(`[data-drum="kick"][data-step="${i}"]`).classList.add('active'); });
+        [4,12].forEach(i => { patterns.snare[i]=true; document.querySelector(`[data-drum="snare"][data-step="${i}"]`).classList.add('active'); });
+        for(let i=0;i<16;i++){ patterns.hihat[i]=true; document.querySelector(`[data-drum="hihat"][data-step="${i}"]`).classList.add('active'); }
+
+        // —— Tarjetas de pistas y reproductor ——
+        const audio = document.getElementById('audioPlayer');
+        const mini = document.getElementById('miniPlayer');
+
+        // Extracción de instrumental: servidor primero; si falla (ej. Vercel sin ffmpeg), se hace en el navegador
+        function bufferToWavBlob(buffer) {
+            const numCh = buffer.numberOfChannels;
+            const sr = buffer.sampleRate;
+            const dataBytes = buffer.length * numCh * 2;
+            const len = 44 + dataBytes;
+            const arr = new ArrayBuffer(len);
+            const view = new DataView(arr);
+            const write = (pos, val) => view.setUint32(pos, val, true);
+            const write16 = (pos, val) => view.setUint16(pos, val, true);
+            const writeStr = (pos, str) => { for (let i = 0; i < str.length; i++) view.setUint8(pos + i, str.charCodeAt(i)); };
+            writeStr(0, 'RIFF');
+            write(4, len - 8);
+            writeStr(8, 'WAVE');
+            writeStr(12, 'fmt ');
+            write(16, 16);
+            write16(20, 1);
+            write16(22, numCh);
+            write(24, sr);
+            write(28, sr * numCh * 2);
+            write16(32, numCh * 2);
+            write16(34, 16);
+            writeStr(36, 'data');
+            write(40, dataBytes);
+            const ch0 = buffer.getChannelData(0);
+            let pos = 44;
+            for (let i = 0; i < buffer.length; i++) {
+                const v = Math.max(-1, Math.min(1, ch0[i]));
+                view.setInt16(pos, v < 0 ? v * 0x8000 : v * 0x7FFF, true);
+                pos += 2;
+            }
+            return new Blob([arr], { type: 'audio/wav' });
+        }
+
+        async function extractInstrumentalInBrowser(audioUrl) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const r = await fetch(audioUrl);
+            if (!r.ok) throw new Error('No se pudo cargar el audio');
+            const buf = await r.arrayBuffer();
+            return extractInstrumentalFromArrayBuffer(ctx, buf);
+        }
+
+        async function extractInstrumentalFromArrayBuffer(audioContext, arrayBuffer) {
+            const buffer = await audioContext.decodeAudioData(arrayBuffer);
+            if (buffer.numberOfChannels < 2) throw new Error('El audio debe ser estéreo');
+            const left = buffer.getChannelData(0);
+            const right = buffer.getChannelData(1);
+            const out = new Float32Array(left.length);
+            for (let i = 0; i < left.length; i++) out[i] = 0.5 * (left[i] - right[i]);
+            const outBuffer = audioContext.createBuffer(1, out.length, buffer.sampleRate);
+            outBuffer.getChannelData(0).set(out);
+            return bufferToWavBlob(outBuffer);
+        }
+
+        async function extractInstrumentalFromFile(file) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const buf = await new Promise((resolve, reject) => {
+                const r = new FileReader();
+                r.onload = () => resolve(r.result);
+                r.onerror = () => reject(new Error('No se pudo leer el archivo'));
+                r.readAsArrayBuffer(file);
+            });
+            return extractInstrumentalFromArrayBuffer(ctx, buf);
+        }
+
+        const uploadSongInput = document.getElementById('uploadSongInput');
+        const uploadSongName = document.getElementById('uploadSongName');
+        const uploadVocalsBtn = document.getElementById('uploadVocalsBtn');
+
+        function setUploadedFile(file) {
+            if (!file) {
+                uploadSongName.textContent = 'Elige un archivo o arrástralo aquí';
+                uploadVocalsBtn.disabled = true;
+                uploadSongInput.value = '';
+                return;
+            }
+            uploadSongName.textContent = file.name;
+            uploadVocalsBtn.disabled = false;
+            try {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                uploadSongInput.files = dt.files;
+            } catch (_) {}
+        }
+
+        uploadSongInput.addEventListener('change', function() {
+            setUploadedFile(this.files && this.files[0]);
+        });
+
+        const uploadLabel = document.querySelector('.upload-vocals-label');
+        if (uploadLabel) {
+            uploadLabel.addEventListener('dragover', (e) => { e.preventDefault(); uploadLabel.style.borderColor = 'var(--gold)'; });
+            uploadLabel.addEventListener('dragleave', () => { uploadLabel.style.borderColor = ''; });
+            uploadLabel.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadLabel.style.borderColor = '';
+                const file = e.dataTransfer.files && e.dataTransfer.files[0];
+                if (file && file.type.startsWith('audio/')) setUploadedFile(file);
+                else if (file) OpiumToast.warning('Sube un archivo de audio (MP3, WAV, etc.).', { title: 'Formato no válido' });
+            });
+        }
+
+        uploadVocalsBtn.addEventListener('click', async () => {
+            const file = uploadSongInput.files && uploadSongInput.files[0];
+            if (!file) return;
+            uploadVocalsBtn.disabled = true;
+            uploadVocalsBtn.textContent = 'Procesando...';
+            try {
+                const blob = await extractInstrumentalFromFile(file);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const baseName = file.name.replace(/\.[^.]+$/, '');
+                a.download = 'instrumental_' + baseName + '.wav';
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                OpiumToast.error(err.message || 'No se pudo extraer el instrumental. Asegúrate de que el archivo sea estéreo.', { title: 'Extracción fallida' });
+            } finally {
+                uploadVocalsBtn.disabled = false;
+                uploadVocalsBtn.textContent = 'Quitar vocales a la canción subida';
+            }
+        });
+
+        document.querySelectorAll('.extract-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const song = btn.dataset.song;
+                const card = btn.closest('.music-card');
+                const audioUrl = (card && card.dataset.src) ? card.dataset.src : ('/static/Music/' + song);
+                btn.disabled = true;
+                btn.textContent = 'Procesando...';
+                try {
+                    const fd = new FormData();
+                    fd.append('song', song);
+                    const r = await fetch('/extract-instrumental', { method: 'POST', body: fd });
+                    if (r.ok) {
+                        const blob = await r.blob();
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `instrumental_${song.replace(/\.[^.]+$/, '')}.wav`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        return;
+                    }
+                    const errData = await r.json().catch(() => ({}));
+                    if (r.status === 503 || (errData.error && (errData.error.includes('ffmpeg') || errData.error.includes('ffprobe')))) {
+                        btn.textContent = 'Procesando en navegador...';
+                        const blob = await extractInstrumentalInBrowser(audioUrl);
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `instrumental_${song.replace(/\.[^.]+$/, '')}.wav`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        return;
+                    }
+                    throw new Error(errData.error || 'Error');
+                } catch (err) {
+                    OpiumToast.error(err.message || 'No se pudo extraer el instrumental.', { title: 'Extracción fallida' });
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Quitar vocales';
+                }
+            });
+        });
+
+        function fmtTime(s) {
+            if (!isFinite(s) || s < 0) return '0:00';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+
+        const miniProgress = document.getElementById('miniProgress');
+        const miniTimeCurrent = document.getElementById('miniTimeCurrent');
+        const miniTimeTotal = document.getElementById('miniTimeTotal');
+        const miniPlayPause = document.getElementById('miniPlayPause');
+
+        function updateMiniProgress() {
+            const dur = audio.duration;
+            if (!isFinite(dur) || dur <= 0) return;
+            const pct = (audio.currentTime / dur) * 100;
+            miniProgress.value = pct;
+            miniTimeCurrent.textContent = fmtTime(audio.currentTime);
+            miniTimeTotal.textContent = fmtTime(dur);
+        }
+
+        const miniPlayIcon = document.getElementById('miniPlayIcon');
+        const miniPauseIcon = document.getElementById('miniPauseIcon');
+        const miniVolume = document.getElementById('miniVolume');
+        const miniPrev = document.getElementById('miniPrev');
+        const miniNext = document.getElementById('miniNext');
+
+        function setMiniPlayIcon(playing) {
+            if (miniPlayIcon && miniPauseIcon) {
+                miniPlayIcon.style.display = playing ? 'none' : 'block';
+                miniPauseIcon.style.display = playing ? 'block' : 'none';
+            }
+            miniPlayPause.setAttribute('aria-label', playing ? 'Pausar' : 'Reproducir');
+        }
+
+        audio.addEventListener('timeupdate', updateMiniProgress);
+        audio.addEventListener('loadedmetadata', () => {
+            miniTimeTotal.textContent = fmtTime(audio.duration);
+            miniProgress.value = 0;
+        });
+        audio.addEventListener('play', () => setMiniPlayIcon(true));
+        audio.addEventListener('pause', () => setMiniPlayIcon(false));
+        audio.addEventListener('ended', () => setMiniPlayIcon(false));
+
+        miniProgress.addEventListener('input', function() {
+            const dur = audio.duration;
+            if (isFinite(dur) && dur > 0) audio.currentTime = (this.value / 100) * dur;
+        });
+
+        miniPlayPause.addEventListener('click', () => {
+            if (audio.paused) audio.play();
+            else audio.pause();
+        });
+
+        if (miniVolume) {
+            miniVolume.addEventListener('input', function() {
+                audio.volume = this.value / 100;
+            });
+        }
+        if (miniPrev) miniPrev.addEventListener('click', () => { /* sin cola por ahora */ });
+        if (miniNext) miniNext.addEventListener('click', () => { /* sin cola por ahora */ });
+
+        document.getElementById('miniPlayerClose').addEventListener('click', () => {
+            audio.pause();
+            mini.classList.add('hidden');
+        });
+
+        function playCard(card) {
+            const src = card.dataset.src;
+            const title = card.dataset.title || 'Track';
+            const artist = card.dataset.artist || 'Artist';
+            const img = card.querySelector('img');
+            audio.src = src;
+            audio.play();
+            document.getElementById('miniArtwork').src = img ? img.src : '';
+            document.getElementById('miniTitle').textContent = title;
+            document.getElementById('miniArtist').textContent = artist;
+            miniTimeCurrent.textContent = '0:00';
+            miniTimeTotal.textContent = '0:00';
+            miniProgress.value = 0;
+            setMiniPlayIcon(true);
+            mini.classList.remove('hidden');
+        }
+
+        document.querySelectorAll('.music-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.extract-btn')) return;
+                playCard(card);
+            });
+        });
+
+        document.querySelectorAll('.suno-card').forEach(card => {
+            card.addEventListener('click', () => playCard(card));
+        });
+
+        document.querySelectorAll('.hero-card-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const card = link.closest('.hero-card');
+                if (card) playCard(card);
+            });
+        });
+
+    </script>
+</body>
 </html>

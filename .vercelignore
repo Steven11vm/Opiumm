@@ -1,0 +1,24 @@
+# Reducir tamaño del Serverless Function (límite 250 MB)
+node_modules
+path_to_save
+static/beats
+static/videos
+public/static/videos
+.git
+.gitignore
+.venv
+venv
+__pycache__
+*.pyc
+.env
+.env.local
+.env.*.local
+.cursor
+.vscode
+test_*.py
+DEPLOY.md
+Config copy.py
+clean_html.py
+*.log
+.DS_Store
+Thumbs.db
