@@ -192,6 +192,110 @@ code, pre, .mono {
 }
 
 /* ---------------------------------------------------------
+   PANTALLA DE CARGA
+   --------------------------------------------------------- */
+.opium-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background:
+        radial-gradient(ellipse at 30% 20%, rgba(212,175,55,.06), transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(212,175,55,.04), transparent 55%),
+        var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    transition: opacity .55s var(--ease), visibility .55s var(--ease);
+    pointer-events: all;
+}
+.opium-loader.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+html.opium-loading, html.opium-loading body { overflow: hidden; }
+
+.opium-loader-brand {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+    font-weight: 500;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    position: relative;
+    background: linear-gradient(90deg,
+        var(--gold-dark) 0%,
+        var(--gold) 25%,
+        var(--gold-soft) 50%,
+        var(--gold) 75%,
+        var(--gold-dark) 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: opium-shimmer 2.6s linear infinite;
+    text-shadow: 0 0 40px rgba(212, 175, 55, .05);
+}
+@keyframes opium-shimmer {
+    0%   { background-position: 250% 0; }
+    100% { background-position: -250% 0; }
+}
+
+.opium-loader-hairline {
+    width: 84px; height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--gold-dim) 50%, transparent 100%);
+}
+
+.opium-loader-bars {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 6px; height: 34px;
+}
+.opium-loader-bars span {
+    display: block; width: 5px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    animation: opium-bar 1.15s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+.opium-loader-bars span:nth-child(1) { height: 45%; animation-delay: .00s; }
+.opium-loader-bars span:nth-child(2) { height: 75%; animation-delay: .08s; }
+.opium-loader-bars span:nth-child(3) { height: 55%; animation-delay: .16s; }
+.opium-loader-bars span:nth-child(4) { height: 95%; animation-delay: .04s; }
+.opium-loader-bars span:nth-child(5) { height: 65%; animation-delay: .22s; }
+.opium-loader-bars span:nth-child(6) { height: 50%; animation-delay: .12s; }
+.opium-loader-bars span:nth-child(7) { height: 80%; animation-delay: .18s; }
+@keyframes opium-bar {
+    0%, 100% { transform: scaleY(.35); opacity: .5; }
+    50%      { transform: scaleY(1);   opacity: 1; }
+}
+
+.opium-loader-text {
+    font-family: var(--sans);
+    font-size: var(--fs-xs);
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    display: inline-flex; align-items: center; gap: .35em;
+}
+.opium-loader-text::after {
+    content: '';
+    width: 3px; height: 3px; border-radius: 50%;
+    background: var(--gold);
+    animation: opium-dot 1.2s ease-in-out infinite;
+}
+@keyframes opium-dot {
+    0%, 100% { transform: scale(.8); opacity: .3; }
+    50%      { transform: scale(1.4); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .opium-loader-brand { animation: none; background: none; -webkit-text-fill-color: var(--gold); color: var(--gold); }
+    .opium-loader-bars span, .opium-loader-text::after { animation: none; opacity: .8; }
+}
+
+/* ---------------------------------------------------------
    4 · UTILIDADES
    --------------------------------------------------------- */
 .hidden { display: none !important; }

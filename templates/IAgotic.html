@@ -11,12 +11,23 @@
     <title>Opium AI — Chat con tu asistente musical</title>
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/static/css/elegant.css">
+    <script src="/static/js/loader.js" nonce="{{ csp_nonce }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer" nonce="{{ csp_nonce }}"></script>
     <script src="/static/js/toast.js" defer nonce="{{ csp_nonce }}"></script>
 </head>
 <body>
+    <!-- Pantalla de carga -->
+    <div class="opium-loader" id="opiumLoader" role="status" aria-live="polite" aria-label="Cargando Opium">
+        <div class="opium-loader-brand">OPIUM</div>
+        <div class="opium-loader-hairline" aria-hidden="true"></div>
+        <div class="opium-loader-bars" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <span class="opium-loader-text">Cargando</span>
+    </div>
+
     <header>
         <nav aria-label="Navegación principal">
             <ul>
